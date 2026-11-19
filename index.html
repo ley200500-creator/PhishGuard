@@ -788,7 +788,8 @@ a { color: var(--accent-strong); }
 .chara-svg { width: 100%; max-width: 296px; height: auto; filter: drop-shadow(0 18px 22px rgba(215, 150, 170, .28)); }
 .chara-raster { display: block; position: relative; }
 .chara-body { width: 100%; height: 0; padding-bottom: 140%; }
-.mode-web .chara-body { height: 414px; padding-bottom: 0; }
+.mode-web .chara-stage { min-height: 414px; }
+.mode-web .chara-body { height: 100%; min-height: 0; padding-bottom: 0; }
 .chara-fallback { position: absolute; inset: 0; }
 .chara-fallback .chara-breathe { position: absolute; inset: 0; }
 .chara-live2d-canvas {

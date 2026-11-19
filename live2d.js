@@ -12,10 +12,6 @@
     sky: 'assets/live2d/sky/sky_layers.model3.json'
   };
 
-  // 模型画布四周带透明留白，直接按画布高度缩放会让人物偏小。
-  // 这里按角色分别做少量放大，既填满卡片又不会裁掉头顶。
-  var SCALE_BOOST = { sakura: 1.12, mint: 1.16, sky: 1.12 };
-
   var MOODS = {
     idle: {
       eyeOpen: 1, eyeSmile: 0, cheek: 0.10, gloom: 0, mouthForm: 0,
@@ -49,6 +45,42 @@
   function stageSize(host) {
     var r = host.getBoundingClientRect();
     return { w: Math.max(1, Math.round(r.width)), h: Math.max(1, Math.round(r.height)) };
+  }
+
+  // 读取角色真正有像素的绘制范围（模型画布四周有大量透明留白，
+  // 不能直接拿画布高度当人物高度，否则不是偏小就是上下裁切）。
+  function contentSize(model, nativeW, nativeH) {
+    var minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
+    var found = false;
+    try {
+      var core = model.internalModel && model.internalModel.coreModel;
+      if (!core) return { w: nativeW, h: nativeH };
+      var count = core.getDrawableCount();
+      for (var i = 0; i < count; i++) {
+        if (core.getDrawableOpacity(i) <= 0.01) continue;
+        var v = core.getDrawableVertexPositions(i);
+        for (var k = 0; k < v.length; k += 2) {
+          var x = v[k], y = v[k + 1];
+          if (x < minX) minX = x;
+          if (y < minY) minY = y;
+          if (x > maxX) maxX = x;
+          if (y > maxY) maxY = y;
+          found = true;
+        }
+      }
+    } catch (e) { /* 忽略 */ }
+    if (!found || maxX <= minX || maxY <= minY) return { w: nativeW, h: nativeH };
+    // Cubism 的顶点坐标范围是 -1 ~ 1，除以 2 得到画布占比。
+    return {
+      w: (maxX - minX) * nativeW,
+      h: (maxY - minY) * nativeH,
+      minY: minY,
+      maxY: maxY
+    };
+  }
+
+  function fitScale(w, h, cw, ch) {
+    return Math.min(w / cw, h / ch) * 0.985;
   }
 
   function setParam(model, id, value) {
@@ -159,7 +191,6 @@
       return null;
     }
     var modelPath = MODELS[id] || MODELS.sakura;
-    var boost = SCALE_BOOST[id] || 1.25;
     try {
       var size = stageSize(stage);
       var app = new PIXI.Application();
@@ -190,10 +221,15 @@
       var model = await PIXI.live2d.Live2DModel.from(modelPath);
       app.stage.addChild(model);
       model.anchor.set(0.5, 1);
-      var nativeH = model.height;
+      var nativeW = model.internalModel.originalWidth || model.width;
+      var nativeH = model.internalModel.originalHeight || model.height;
+      var content = contentSize(model, nativeW, nativeH);
+      var fitW = content.w, fitH = content.h;
+      var scale = fitScale(size.w, size.h, fitW, fitH);
       model.x = size.w / 2;
-      model.y = size.h + 1;
-      model.scale.set((size.h / nativeH) * boost);
+      // 模型画布底部仍有少量透明留白，往下补 16px，让人物脚底贴近卡片底部。
+      model.y = size.h + 16;
+      model.scale.set(scale);
 
       // 不使用内置动作/眨眼，改由本文件统一驱动；保留物理和变形
       try { model.internalModel.motionManager.stopAllMotions(); } catch (e) {}
@@ -210,9 +246,10 @@
           var s = stageSize(stage);
           if (!s.w || !s.h) return;
           try { app.renderer.resize(s.w, s.h); } catch (e) {}
+          var rs = fitScale(s.w, s.h, fitW, fitH);
           model.x = s.w / 2;
-          model.y = s.h + 1;
-          model.scale.set((s.h / nativeH) * boost);
+          model.y = s.h + 16;
+          model.scale.set(rs);
         });
         ro.observe(stage);
       }
