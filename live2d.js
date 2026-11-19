@@ -12,6 +12,10 @@
     sky: 'assets/live2d/sky/sky_layers.model3.json'
   };
 
+  // 模型画布四周带透明留白，直接按画布高度缩放会让人物偏小。
+  // 这里按角色分别做少量放大，既填满卡片又不会裁掉头顶。
+  var SCALE_BOOST = { sakura: 1.12, mint: 1.16, sky: 1.12 };
+
   var MOODS = {
     idle: {
       eyeOpen: 1, eyeSmile: 0, cheek: 0.10, gloom: 0, mouthForm: 0,
@@ -155,6 +159,7 @@
       return null;
     }
     var modelPath = MODELS[id] || MODELS.sakura;
+    var boost = SCALE_BOOST[id] || 1.25;
     try {
       var size = stageSize(stage);
       var app = new PIXI.Application();
@@ -188,7 +193,7 @@
       var nativeH = model.height;
       model.x = size.w / 2;
       model.y = size.h + 1;
-      model.scale.set(size.h / nativeH);
+      model.scale.set((size.h / nativeH) * boost);
 
       // 不使用内置动作/眨眼，改由本文件统一驱动；保留物理和变形
       try { model.internalModel.motionManager.stopAllMotions(); } catch (e) {}
@@ -207,7 +212,7 @@
           try { app.renderer.resize(s.w, s.h); } catch (e) {}
           model.x = s.w / 2;
           model.y = s.h + 1;
-          model.scale.set(s.h / nativeH);
+          model.scale.set((s.h / nativeH) * boost);
         });
         ro.observe(stage);
       }
