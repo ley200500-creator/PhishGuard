@@ -184,6 +184,16 @@
   async function mountIn(host, id, mood) {
     if (!host) return null;
     var stage = stageOf(host);
+    // 网页版强制给角色区一个确定高度，避免旧 CSS/浏览器缓存的 height:100%
+    // 解析失败时把人物压小或裁切。
+    try {
+      if (root.document && document.body && document.body.classList.contains('mode-web')) {
+        if (stage.parentElement) stage.parentElement.style.minHeight = '500px';
+        stage.style.height = '500px';
+        stage.style.minHeight = '500px';
+        stage.style.paddingBottom = '0';
+      }
+    } catch (e) { /* 忽略 */ }
     dispose(stage);
     var canvas = stage.querySelector('.chara-live2d-canvas');
     if (!canvas || !root.PIXI || !PIXI.live2d) {
