@@ -1,0 +1,90 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "sky_layers.moc3",
+    "Textures": [
+      "sky_layers.2048/texture_00.png",
+      "sky_layers.2048/texture_01.png",
+      "sky_layers.2048/texture_02.png",
+      "sky_layers.2048/texture_03.png",
+      "sky_layers.2048/texture_04.png"
+    ],
+    "Physics": "sky_layers.physics3.json",
+    "DisplayInfo": "sky_layers.cdi3.json",
+    "Expressions": [
+      {
+        "Name": "Smile",
+        "File": "sky_layers.smile.exp3.json"
+      },
+      {
+        "Name": "Sad",
+        "File": "sky_layers.sad.exp3.json"
+      },
+      {
+        "Name": "Angry",
+        "File": "sky_layers.angry.exp3.json"
+      },
+      {
+        "Name": "Surprised",
+        "File": "sky_layers.surprised.exp3.json"
+      },
+      {
+        "Name": "Shy",
+        "File": "sky_layers.shy.exp3.json"
+      },
+      {
+        "Name": "Sleepy",
+        "File": "sky_layers.sleepy.exp3.json"
+      },
+      {
+        "Name": "Gloomy",
+        "File": "sky_layers.gloom.exp3.json"
+      }
+    ],
+    "Motions": {
+      "Idle": [
+        {
+          "File": "sky_layers.idle.motion3.json"
+        }
+      ],
+      "Blink": [
+        {
+          "File": "sky_layers.blink.motion3.json"
+        }
+      ],
+      "Nod": [
+        {
+          "File": "sky_layers.nod.motion3.json"
+        }
+      ],
+      "Shake": [
+        {
+          "File": "sky_layers.shake.motion3.json"
+        }
+      ],
+      "Talk": [
+        {
+          "File": "sky_layers.talk.motion3.json"
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthOpenY"
+      ]
+    }
+  ],
+  "HitAreas": []
+}

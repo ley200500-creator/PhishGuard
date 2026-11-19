@@ -1,0 +1,91 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "mint_layers.moc3",
+    "Textures": [
+      "mint_layers.2048/texture_00.png",
+      "mint_layers.2048/texture_01.png",
+      "mint_layers.2048/texture_02.png",
+      "mint_layers.2048/texture_03.png",
+      "mint_layers.2048/texture_04.png",
+      "mint_layers.2048/texture_05.png"
+    ],
+    "Physics": "mint_layers.physics3.json",
+    "DisplayInfo": "mint_layers.cdi3.json",
+    "Expressions": [
+      {
+        "Name": "Smile",
+        "File": "mint_layers.smile.exp3.json"
+      },
+      {
+        "Name": "Sad",
+        "File": "mint_layers.sad.exp3.json"
+      },
+      {
+        "Name": "Angry",
+        "File": "mint_layers.angry.exp3.json"
+      },
+      {
+        "Name": "Surprised",
+        "File": "mint_layers.surprised.exp3.json"
+      },
+      {
+        "Name": "Shy",
+        "File": "mint_layers.shy.exp3.json"
+      },
+      {
+        "Name": "Sleepy",
+        "File": "mint_layers.sleepy.exp3.json"
+      },
+      {
+        "Name": "Gloomy",
+        "File": "mint_layers.gloom.exp3.json"
+      }
+    ],
+    "Motions": {
+      "Idle": [
+        {
+          "File": "mint_layers.idle.motion3.json"
+        }
+      ],
+      "Blink": [
+        {
+          "File": "mint_layers.blink.motion3.json"
+        }
+      ],
+      "Nod": [
+        {
+          "File": "mint_layers.nod.motion3.json"
+        }
+      ],
+      "Shake": [
+        {
+          "File": "mint_layers.shake.motion3.json"
+        }
+      ],
+      "Talk": [
+        {
+          "File": "mint_layers.talk.motion3.json"
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthOpenY"
+      ]
+    }
+  ],
+  "HitAreas": []
+}

@@ -1,0 +1,86 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "sakura_layers.moc3",
+    "Textures": [
+      "sakura_layers.4096/texture_00.png"
+    ],
+    "Physics": "sakura_layers.physics3.json",
+    "DisplayInfo": "sakura_layers.cdi3.json",
+    "Expressions": [
+      {
+        "Name": "Smile",
+        "File": "sakura_layers.smile.exp3.json"
+      },
+      {
+        "Name": "Sad",
+        "File": "sakura_layers.sad.exp3.json"
+      },
+      {
+        "Name": "Angry",
+        "File": "sakura_layers.angry.exp3.json"
+      },
+      {
+        "Name": "Surprised",
+        "File": "sakura_layers.surprised.exp3.json"
+      },
+      {
+        "Name": "Shy",
+        "File": "sakura_layers.shy.exp3.json"
+      },
+      {
+        "Name": "Sleepy",
+        "File": "sakura_layers.sleepy.exp3.json"
+      },
+      {
+        "Name": "Gloomy",
+        "File": "sakura_layers.gloom.exp3.json"
+      }
+    ],
+    "Motions": {
+      "Idle": [
+        {
+          "File": "sakura_layers.idle.motion3.json"
+        }
+      ],
+      "Blink": [
+        {
+          "File": "sakura_layers.blink.motion3.json"
+        }
+      ],
+      "Nod": [
+        {
+          "File": "sakura_layers.nod.motion3.json"
+        }
+      ],
+      "Shake": [
+        {
+          "File": "sakura_layers.shake.motion3.json"
+        }
+      ],
+      "Talk": [
+        {
+          "File": "sakura_layers.talk.motion3.json"
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthOpenY"
+      ]
+    }
+  ],
+  "HitAreas": []
+}
