@@ -203,6 +203,7 @@
     var modelPath = MODELS[id] || MODELS.sakura;
     try {
       var size = stageSize(stage);
+      var baseW = size.w, baseH = size.h;
       var app = new PIXI.Application();
       await app.init({
         canvas: canvas,
@@ -255,6 +256,9 @@
         ro = new ResizeObserver(function () {
           var s = stageSize(stage);
           if (!s.w || !s.h) return;
+          // 页面加载后气泡文字/字体变化会让容器短暂变小；此时如果跟着缩，
+          // 角色会突然向左下角缩小。只允许明显变大时重排，忽略这种瞬时缩小。
+          if (s.w < baseW * 0.95 || s.h < baseH * 0.95) return;
           try { app.renderer.resize(s.w, s.h); } catch (e) {}
           var rs = fitScale(s.w, s.h, fitW, fitH);
           model.x = s.w / 2;
@@ -264,7 +268,27 @@
         ro.observe(stage);
       }
 
-      instances.set(stage, { app: app, model: model, st: st, tick: tick, ro: ro });
+      var inst = { app: app, model: model, st: st, tick: tick, ro: ro };
+      instances.set(stage, inst);
+      // 兜底：有些浏览器在字体/滚动条/气泡布局稳定后会延迟触发一次
+      // 容器尺寸变化，导致角色在 2~3 秒后突然缩小到左下角。
+      // 这里在关键时间点把首次正确的尺寸重新锁回去。
+      var lockSize = function () {
+        try {
+          if (instances.get(stage) !== inst) return;
+          stage.style.height = '500px';
+          stage.style.minHeight = '500px';
+          stage.style.paddingBottom = '0';
+          app.renderer.resize(baseW, baseH);
+          var lockScale = fitScale(baseW, baseH, fitW, fitH);
+          model.x = baseW / 2;
+          model.y = baseH + 16;
+          model.scale.set(lockScale);
+        } catch (e) { /* 忽略 */ }
+      };
+      setTimeout(lockSize, 1800);
+      setTimeout(lockSize, 3200);
+      setTimeout(lockSize, 5000);
       stage.classList.add('live2d-ready');
       stage.classList.remove('live2d-failed');
       canvas.dispatchEvent(new CustomEvent('live2d-ready', { bubbles: true }));
