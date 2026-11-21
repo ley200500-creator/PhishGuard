@@ -47,42 +47,6 @@
     return { w: Math.max(1, Math.round(r.width)), h: Math.max(1, Math.round(r.height)) };
   }
 
-  // 读取角色真正有像素的绘制范围（模型画布四周有大量透明留白，
-  // 不能直接拿画布高度当人物高度，否则不是偏小就是上下裁切）。
-  function contentSize(model, nativeW, nativeH) {
-    var minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
-    var found = false;
-    try {
-      var core = model.internalModel && model.internalModel.coreModel;
-      if (!core) return { w: nativeW, h: nativeH };
-      var count = core.getDrawableCount();
-      for (var i = 0; i < count; i++) {
-        if (core.getDrawableOpacity(i) <= 0.01) continue;
-        var v = core.getDrawableVertexPositions(i);
-        for (var k = 0; k < v.length; k += 2) {
-          var x = v[k], y = v[k + 1];
-          if (x < minX) minX = x;
-          if (y < minY) minY = y;
-          if (x > maxX) maxX = x;
-          if (y > maxY) maxY = y;
-          found = true;
-        }
-      }
-    } catch (e) { /* 忽略 */ }
-    if (!found || maxX <= minX || maxY <= minY) return { w: nativeW, h: nativeH };
-    // Cubism 的顶点坐标范围是 -1 ~ 1，除以 2 得到画布占比。
-    return {
-      w: (maxX - minX) * nativeW,
-      h: (maxY - minY) * nativeH,
-      minY: minY,
-      maxY: maxY
-    };
-  }
-
-  function fitScale(w, h, cw, ch) {
-    return Math.min(w / cw, h / ch) * 0.985;
-  }
-
   function setParam(model, id, value) {
     try {
       var cm = model.internalModel && model.internalModel.coreModel;
@@ -184,16 +148,6 @@
   async function mountIn(host, id, mood) {
     if (!host) return null;
     var stage = stageOf(host);
-    // 网页版强制给角色区一个确定高度，避免旧 CSS/浏览器缓存的 height:100%
-    // 解析失败时把人物压小或裁切。
-    try {
-      if (root.document && document.body && document.body.classList.contains('mode-web')) {
-        if (stage.parentElement) stage.parentElement.style.minHeight = '500px';
-        stage.style.height = '500px';
-        stage.style.minHeight = '500px';
-        stage.style.paddingBottom = '0';
-      }
-    } catch (e) { /* 忽略 */ }
     dispose(stage);
     var canvas = stage.querySelector('.chara-live2d-canvas');
     if (!canvas || !root.PIXI || !PIXI.live2d) {
@@ -203,7 +157,6 @@
     var modelPath = MODELS[id] || MODELS.sakura;
     try {
       var size = stageSize(stage);
-      var baseW = size.w, baseH = size.h;
       var app = new PIXI.Application();
       await app.init({
         canvas: canvas,
@@ -232,15 +185,10 @@
       var model = await PIXI.live2d.Live2DModel.from(modelPath);
       app.stage.addChild(model);
       model.anchor.set(0.5, 1);
-      var nativeW = model.internalModel.originalWidth || model.width;
-      var nativeH = model.internalModel.originalHeight || model.height;
-      var content = contentSize(model, nativeW, nativeH);
-      var fitW = content.w, fitH = content.h;
-      var scale = fitScale(size.w, size.h, fitW, fitH);
+      var nativeH = model.height;
       model.x = size.w / 2;
-      // 模型画布底部仍有少量透明留白，往下补 16px，让人物脚底贴近卡片底部。
-      model.y = size.h + 16;
-      model.scale.set(scale);
+      model.y = size.h + 1;
+      model.scale.set(size.h / nativeH);
 
       // 不使用内置动作/眨眼，改由本文件统一驱动；保留物理和变形
       try { model.internalModel.motionManager.stopAllMotions(); } catch (e) {}
@@ -256,39 +204,15 @@
         ro = new ResizeObserver(function () {
           var s = stageSize(stage);
           if (!s.w || !s.h) return;
-          // 页面加载后气泡文字/字体变化会让容器短暂变小；此时如果跟着缩，
-          // 角色会突然向左下角缩小。只允许明显变大时重排，忽略这种瞬时缩小。
-          if (s.w < baseW * 0.95 || s.h < baseH * 0.95) return;
           try { app.renderer.resize(s.w, s.h); } catch (e) {}
-          var rs = fitScale(s.w, s.h, fitW, fitH);
           model.x = s.w / 2;
-          model.y = s.h + 16;
-          model.scale.set(rs);
+          model.y = s.h + 1;
+          model.scale.set(s.h / nativeH);
         });
         ro.observe(stage);
       }
 
-      var inst = { app: app, model: model, st: st, tick: tick, ro: ro };
-      instances.set(stage, inst);
-      // 兜底：有些浏览器在字体/滚动条/气泡布局稳定后会延迟触发一次
-      // 容器尺寸变化，导致角色在 2~3 秒后突然缩小到左下角。
-      // 这里在关键时间点把首次正确的尺寸重新锁回去。
-      var lockSize = function () {
-        try {
-          if (instances.get(stage) !== inst) return;
-          stage.style.height = '500px';
-          stage.style.minHeight = '500px';
-          stage.style.paddingBottom = '0';
-          app.renderer.resize(baseW, baseH);
-          var lockScale = fitScale(baseW, baseH, fitW, fitH);
-          model.x = baseW / 2;
-          model.y = baseH + 16;
-          model.scale.set(lockScale);
-        } catch (e) { /* 忽略 */ }
-      };
-      setTimeout(lockSize, 1800);
-      setTimeout(lockSize, 3200);
-      setTimeout(lockSize, 5000);
+      instances.set(stage, { app: app, model: model, st: st, tick: tick, ro: ro });
       stage.classList.add('live2d-ready');
       stage.classList.remove('live2d-failed');
       canvas.dispatchEvent(new CustomEvent('live2d-ready', { bubbles: true }));

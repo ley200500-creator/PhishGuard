@@ -1,15 +1,12 @@
-<!-- PhishGuard v7 完整立绘重写版 | 2026-11-20 -->
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme="pink">
 <head>
 <meta charset="utf-8">
-<meta name="phishguard-build" content="v7-integrity">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PhishGuard · 二次元看板娘钓鱼检测</title>
 <meta name="description" content="PhishGuard 是一个二次元看板娘风格的钓鱼网址检测工具：12 项特征、纯前端本地分析、不上传任何数据。">
 <meta name="theme-color" content="#FFF7FA">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%228%22%20fill%3D%22%23FFF1F6%22%2F%3E%3Cpath%20d%3D%22M16%203.5%20L25.5%207v9.2c0%205.9-3.8%2010.8-9.5%2013.6C10.3%2025%206.5%2020.1%206.5%2014.2V7z%22%20fill%3D%22%23fff%22%20stroke%3D%22%23F4789A%22%20stroke-width%3D%221.9%22%2F%3E%3Cpath%20d%3D%22M11.2%2015.8l3.1%203.4%206.6-7%22%20fill%3D%22none%22%20stroke%3D%22%23F0607F%22%20stroke-width%3D%222.9%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E">
-<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Baloo+2:wght@400;600;800&family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
 <style>
 /* ============================================================================
  * PhishGuard · 样式表（网页版与插件版共用）
@@ -790,46 +787,7 @@ a { color: var(--accent-strong); }
 .chara-svg { width: 100%; max-width: 296px; height: auto; filter: drop-shadow(0 18px 22px rgba(215, 150, 170, .28)); }
 .chara-raster { display: block; position: relative; }
 .chara-body { width: 100%; height: 0; padding-bottom: 140%; }
-.mode-web .chara-stage { min-height: 600px; }
-.mode-web .chara-body { height: 580px !important; min-height: 580px !important; padding-bottom: 0 !important; animation: none !important; transform: none !important; }
-
-/* ===== 角色展示区重写（v5）：固定肖像画布，加载后不再重算尺寸 ===== */
-.chara-panel { min-height: 800px; }
-.chara-stage {
-  flex: 0 0 auto;
-  width: 270px;
-  max-width: 100%;
-  height: 600px;
-  min-height: 600px;
-  padding-top: 20px;
-  box-sizing: border-box;
-  margin: 0 auto;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: visible;
-}
-.chara-svg, .chara-body {
-  width: 270px;
-  max-width: 100%;
-  height: 580px !important;
-  min-height: 580px !important;
-  padding-bottom: 0 !important;
-  flex: none;
-  animation: none !important;
-  transform: none !important;
-  overflow: hidden;
-}
-.chara-svg.swap { animation: none !important; transform: none !important; }
-.chara-body .ci {
-  height: 100% !important;
-  width: auto !important;
-  max-width: none !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  object-fit: contain !important;
-  object-position: center bottom;
-}
+.mode-web .chara-body { height: 414px; padding-bottom: 0; }
 .chara-fallback { position: absolute; inset: 0; }
 .chara-fallback .chara-breathe { position: absolute; inset: 0; }
 .chara-live2d-canvas {
@@ -1593,6 +1551,86 @@ body.mode-popup {
 .result-card[data-level="idle"] .ring-fill { opacity: 0; }
 .pop-card[data-level="idle"] .ring-fill { opacity: 0; }
 
+/* --------------------------------------------------- MiniChat 增强样式 --- */
+.chat-head .chat-acts {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+.chat-head .chat-acts .icon-btn { margin-left: 0; }
+
+.chat-panel {
+  width: 352px;
+  height: 486px;
+}
+
+.msg .bubble-mini {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.chat-typing .bubble-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 42px;
+  padding: 9px 12px;
+}
+.chat-typing .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-strong);
+  opacity: .45;
+  animation: pgChatDot 1.1s infinite ease-in-out;
+}
+.chat-typing .dot:nth-child(2) { animation-delay: .16s; }
+.chat-typing .dot:nth-child(3) { animation-delay: .32s; }
+@keyframes pgChatDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: .35; }
+  30% { transform: translateY(-3px); opacity: 1; }
+}
+
+/* 插件弹窗里的聊天抽屉 */
+.pop-chat[hidden] { display: none; }
+.pop-chat {
+  position: fixed;
+  left: 7px;
+  right: 7px;
+  top: 48px;
+  bottom: 7px;
+  z-index: 65;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(255, 253, 252, .985), rgba(255, 247, 250, .97));
+  box-shadow: 0 24px 46px -24px rgba(180, 110, 135, .62);
+  overflow: hidden;
+  animation: chat-in .22s cubic-bezier(.2, .9, .3, 1.1);
+}
+.pop-chat .chat-head { padding: 8px 10px; gap: 7px; }
+.pop-chat .chat-head .mini-ava { width: 27px; height: 27px; }
+.pop-chat .chat-head b { font-size: 12.5px; }
+.pop-chat .chat-head small { font-size: 9px; }
+.pop-chat .chat-head .icon-btn { width: 24px; height: 24px; }
+.pop-chat .chat-head .icon-btn svg { width: 14px; height: 14px; }
+.pop-chat .chat-body { padding: 9px 9px 4px; gap: 7px; }
+.pop-chat .msg { gap: 6px; }
+.pop-chat .msg .mini-ava { width: 22px; height: 22px; }
+.pop-chat .bubble-mini { font-size: 12px; padding: 7px 9px; max-width: 86%; }
+.pop-chat .chat-chips { padding: 0 9px 5px; gap: 4px; }
+.pop-chat .chat-chips button { font-size: 10.5px; padding: 3px 7px; }
+.pop-chat .chat-input { padding: 7px 8px 8px; gap: 5px; }
+.pop-chat .chat-input input { height: 32px; font-size: 12px; padding: 0 10px; }
+.pop-chat .chat-input button { width: 32px; height: 32px; }
+.pop-chat .chat-input button svg { width: 15px; height: 15px; }
+@media (max-width: 640px) {
+  .chat-panel { width: calc(100vw - 24px); max-width: none; }
+}
+
 </style>
 </head>
 <body class="mode-web">
@@ -1783,15 +1821,20 @@ body.mode-popup {
     <section class="chat-panel" id="chatPanel" hidden aria-label="和看板娘聊天">
       <header class="chat-head">
         <span id="chatAva"></span>
-        <div><b id="chatName">小樱</b><small>看板娘 · 预设问答</small></div>
-        <button type="button" class="icon-btn" id="chatClose" aria-label="关闭聊天">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-        </button>
+        <div><b id="chatName">小樱</b><small id="chatMode">MiniChat · 离线智能 · 本地记忆</small></div>
+        <div class="chat-acts">
+          <button type="button" class="icon-btn" id="chatClear" aria-label="清空聊天记忆" title="清空聊天记忆">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4.5h6V7"/><path d="M6.5 7l1 13h9l1-13"/><path d="M10 11v5M14 11v5"/></svg>
+          </button>
+          <button type="button" class="icon-btn" id="chatClose" aria-label="关闭聊天">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
       </header>
       <div class="chat-body" id="chatBody"></div>
       <div class="chat-chips" id="chatChips"></div>
       <form class="chat-input" id="chatForm">
-        <input id="chatInput" placeholder="想问点什么？" autocomplete="off" aria-label="聊天内容">
+        <input id="chatInput" placeholder="发网址，或问一个防骗问题…" maxlength="160" autocomplete="off" aria-label="聊天内容">
         <button type="submit" aria-label="发送">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 11.5L20.5 4l-7 16-2.6-6.4z"/></svg>
         </button>
@@ -1832,300 +1875,10 @@ body.mode-popup {
       </div>
     </div>
 
-<script>
-/* ============================================================================
- * PhishGuard · Live2D 运行时（PixiJS + Cubism 5）
- * 由 popup.js / web.js 在角色区域生成后调用 mountIn()。
- * 设计目标：全身立绘、呼吸/眨眼/轻微摆动，并按检测结果切换情绪。
- * ========================================================================== */
-(function (root) {
-  'use strict';
-
-  var MODELS = {
-    sakura: 'assets/live2d/sakura/sakura_layers.model3.json',
-    mint: 'assets/live2d/mint/mint_layers.model3.json',
-    sky: 'assets/live2d/sky/sky_layers.model3.json'
-  };
-
-  var MOODS = {
-    idle: {
-      eyeOpen: 1, eyeSmile: 0, cheek: 0.10, gloom: 0, mouthForm: 0,
-      angleX: 0, angleY: 0, angleZ: 0, bodyX: 0, browY: 0, speed: 1
-    },
-    happy: {
-      eyeOpen: 0.82, eyeSmile: 1, cheek: 1, gloom: 0, mouthForm: 1,
-      angleX: 2, angleY: 1, angleZ: 6, bodyX: 2, browY: 0.3, speed: 1.35
-    },
-    warn: {
-      eyeOpen: 0.92, eyeSmile: -0.4, cheek: 0.05, gloom: 0.16, mouthForm: -0.7,
-      angleX: -2, angleY: -5, angleZ: -4, bodyX: -2, browY: -0.35, speed: 0.9
-    },
-    danger: {
-      eyeOpen: 1, eyeSmile: -0.7, cheek: 0, gloom: 0.35, mouthForm: -0.95,
-      angleX: -3, angleY: -2, angleZ: -8, bodyX: -3, browY: -0.5, speed: 0.75
-    },
-    thinking: {
-      eyeOpen: 0.72, eyeSmile: 0, cheek: 0.05, gloom: 0, mouthForm: 0,
-      angleX: 4, angleY: 2, angleZ: -3, bodyX: 2, browY: 0.3, speed: 1.1
-    }
-  };
-
-  var instances = new Map();
-  var HY = 1000;
-
-  function now() { return (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now(); }
-  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-  function lerp(a, b, t) { return a + (b - a) * t; }
-
-  function stageSize(host) {
-    var r = host.getBoundingClientRect();
-    return { w: Math.max(1, Math.round(r.width)), h: Math.max(1, Math.round(r.height)) };
-  }
-
-  // 读取角色真正有像素的绘制范围（模型画布四周有大量透明留白，
-  // 不能直接拿画布高度当人物高度，否则不是偏小就是上下裁切）。
-  function contentSize(model, nativeW, nativeH) {
-    var minX = 1e9, minY = 1e9, maxX = -1e9, maxY = -1e9;
-    var found = false;
-    try {
-      var core = model.internalModel && model.internalModel.coreModel;
-      if (!core) return { w: nativeW, h: nativeH };
-      var count = core.getDrawableCount();
-      for (var i = 0; i < count; i++) {
-        if (core.getDrawableOpacity(i) <= 0.01) continue;
-        var v = core.getDrawableVertexPositions(i);
-        for (var k = 0; k < v.length; k += 2) {
-          var x = v[k], y = v[k + 1];
-          if (x < minX) minX = x;
-          if (y < minY) minY = y;
-          if (x > maxX) maxX = x;
-          if (y > maxY) maxY = y;
-          found = true;
-        }
-      }
-    } catch (e) { /* 忽略 */ }
-    if (!found || maxX <= minX || maxY <= minY) return { w: nativeW, h: nativeH };
-    // Cubism 的顶点坐标范围是 -1 ~ 1，除以 2 得到画布占比。
-    return {
-      w: (maxX - minX) * nativeW,
-      h: (maxY - minY) * nativeH,
-      // Cubism 顶点范围约为 -1~1，2 个单位对应 nativeW；
-      // 人物实际内容不一定在模型画布正中心，必须按内容中心补偿。
-      cx: ((minX + maxX) / 2) * nativeW / 2,
-      minY: minY,
-      maxY: maxY
-    };
-  }
-
-  function fitScale(w, h, cw, ch) {
-    return Math.min(w / cw, h / ch) * 0.985;
-  }
-
-  function setParam(model, id, value) {
-    try {
-      var cm = model.internalModel && model.internalModel.coreModel;
-      if (!cm) return;
-      cm.setParameterValueById(id, value);
-    } catch (e) { /* 参数不存在时忽略 */ }
-  }
-
-  function makeState(mood) {
-    var m = MOODS[mood] || MOODS.idle;
-    return {
-      mood: mood in MOODS ? mood : 'idle',
-      cur: { eyeOpen: m.eyeOpen, eyeSmile: m.eyeSmile, cheek: m.cheek, gloom: m.gloom,
-        mouthForm: m.mouthForm, angleX: m.angleX, angleY: m.angleY, angleZ: m.angleZ,
-        bodyX: m.bodyX, browY: m.browY },
-      blinkAt: now() + 1200 + Math.random() * 1800,
-      blinkUntil: 0,
-      shakeUntil: 0,
-      last: now()
-    };
-  }
-
-  function applyParams(model, st, t) {
-    var target = MOODS[st.mood] || MOODS.idle;
-    var k = 0.10;
-    Object.keys(st.cur).forEach(function (key) {
-      st.cur[key] = lerp(st.cur[key], target[key], k);
-    });
-
-    var seconds = t * 0.001;
-    var speed = target.speed || 1;
-    var breath = 0.5 + 0.5 * Math.sin(seconds * 0.95 * speed);
-    var sway = Math.sin(seconds * 0.55 * speed) * 2.2;
-    var bob = Math.sin(seconds * 0.85 * speed) * 1.8;
-    if (st.mood === 'happy') bob += Math.sin(seconds * 2.3) * 3.2;
-    if (st.mood === 'danger') bob += Math.sin(seconds * 7.0) * 0.9;
-
-    // 眨眼：每 3–5 秒一次，闭眼 130ms
-    if (t > st.blinkAt && t > st.blinkUntil) {
-      st.blinkUntil = t + 130;
-      st.blinkAt = t + 3000 + Math.random() * 2200;
-    }
-    var blinking = t < st.blinkUntil;
-    var eyeFactor = blinking ? 0.05 : st.cur.eyeOpen;
-
-    // 危险抖动：情绪切换后的 550ms
-    var shake = 0;
-    if (t < st.shakeUntil) {
-      shake = Math.sin(seconds * 42) * 7.0 * (1 - (st.shakeUntil - t) / 550);
-    }
-
-    // 只驱动眼睛/嘴/脸颊，不再驱动头身角度，避免手动分层模型出现断肢。
-    setParam(model, 'ParamBreath', 0.5);
-    setParam(model, 'ParamAngleX', 0);
-    setParam(model, 'ParamAngleY', 0);
-    setParam(model, 'ParamAngleZ', 0);
-    setParam(model, 'ParamBodyAngleX', 0);
-    setParam(model, 'ParamBodyAngleZ', 0);
-    setParam(model, 'ParamBodyAngleY', 0);
-
-    setParam(model, 'ParamEyeLOpen', eyeFactor);
-    setParam(model, 'ParamEyeROpen', eyeFactor);
-    setParam(model, 'ParamEyeLSmile', st.cur.eyeSmile);
-    setParam(model, 'ParamEyeRSmile', st.cur.eyeSmile);
-    setParam(model, 'ParamCheek', clamp(st.cur.cheek, 0, 1));
-    setParam(model, 'ParamGloom', clamp(st.cur.gloom, 0, 1));
-    setParam(model, 'ParamMouthForm', clamp(st.cur.mouthForm, -1, 1));
-    setParam(model, 'ParamMouthOpenY', st.mood === 'happy' ? 0.12 : 0);
-    setParam(model, 'ParamBrowLY', clamp(st.cur.browY, -1, 1));
-    setParam(model, 'ParamBrowRY', clamp(st.cur.browY, -1, 1));
-
-    // 让模型把最新参数写进顶点
-    try {
-      if (model.internalModel && model.internalModel.coreModel && model.internalModel.coreModel.update) {
-        model.internalModel.coreModel.update();
-      }
-    } catch (e) { /* 忽略 */ }
-  }
-
-  function dispose(host) {
-    var inst = instances.get(host);
-    if (!inst) return;
-    instances.delete(host);
-    try { if (inst.ro) inst.ro.disconnect(); } catch (e) {}
-    try { inst.app.ticker.remove(inst.tick); } catch (e) {}
-    try { inst.app.destroy(true, { children: true }); } catch (e) {}
-    if (root.app === inst.app) root.app = null;
-    host.classList.remove('live2d-ready', 'live2d-failed');
-  }
-
-  function stageOf(host) {
-    return (host && host.querySelector && host.querySelector('.chara-body')) || host;
-  }
-
-  function disposeIn(host) {
-    var stage = stageOf(host);
-    if (stage) dispose(stage);
-  }
-
-  async function mountIn(host, id, mood) {
-    if (!host) return null;
-    var stage = stageOf(host);
-    // 网页版强制给角色区一个确定高度，避免旧 CSS/浏览器缓存的 height:100%
-    // 解析失败时把人物压小或裁切。
-    try {
-      if (root.document && document.body && document.body.classList.contains('mode-web')) {
-        if (stage.parentElement) stage.parentElement.style.minHeight = '500px';
-        stage.style.height = '500px';
-        stage.style.minHeight = '500px';
-        stage.style.paddingBottom = '0';
-      }
-    } catch (e) { /* 忽略 */ }
-    dispose(stage);
-    var canvas = stage.querySelector('.chara-live2d-canvas');
-    if (!canvas || !root.PIXI || !PIXI.live2d) {
-      stage.classList.add('live2d-failed');
-      return null;
-    }
-    var modelPath = MODELS[id] || MODELS.sakura;
-    try {
-      var size = stageSize(stage);
-      var baseW = size.w, baseH = size.h;
-      var app = new PIXI.Application();
-      await app.init({
-        canvas: canvas,
-        width: size.w,
-        height: size.h,
-        backgroundAlpha: 0,
-        antialias: true,
-        autoDensity: true,
-        resolution: Math.min(2, (root.devicePixelRatio || 1))
-      });
-      root.PIXI = PIXI;
-      root.app = app;
-
-      // Pixi 8 的 backgroundAlpha 在部分构建里没有传到 gl.clearColor，导致画布出现白底。
-      // 关闭自动清屏，并在渲染前手动以透明色 clear。
-      try {
-        app.renderer.background.clearBeforeRender = false;
-        var gl = app.renderer.gl;
-        var clearTransparent = function () {
-          gl.clearColor(0, 0, 0, 0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-        };
-        app.ticker.add(clearTransparent, null, PIXI.UPDATE_PRIORITY.HIGH);
-      } catch (e) { /* 忽略 */ }
-
-      var model = await PIXI.live2d.Live2DModel.from(modelPath);
-      app.stage.addChild(model);
-      model.anchor.set(0.5, 1);
-      // 该模型是手动分层导出的，物理演算会把手臂/头发和身体拆开。
-      // 关掉物理，只保留整模参数和眨眼，保证图层始终是一个整体。
-      try { model.internalModel.physics = null; } catch (e) { /* 忽略 */ }
-      try { model.internalModel.eyeBlink = null; } catch (e) { /* 忽略 */ }
-      var nativeW = model.internalModel.originalWidth || model.width;
-      var nativeH = model.internalModel.originalHeight || model.height;
-      var content = contentSize(model, nativeW, nativeH);
-      var fitW = content.w, fitH = content.h;
-      var scale = fitScale(size.w, size.h, fitW, fitH);
-      model.x = size.w / 2 - (content.cx || 0) * scale;
-      // 模型画布底部仍有少量透明留白，往下补 16px，让人物脚底贴近卡片底部。
-      model.y = size.h + 16;
-      model.scale.set(scale);
-
-      // 不使用内置动作/眨眼，改由本文件统一驱动；保留物理和变形
-      try { model.internalModel.motionManager.stopAllMotions(); } catch (e) {}
-      try { model.internalModel.eyeBlink = null; } catch (e) {}
-
-      var st = makeState(mood || 'idle');
-      var tick = function () { applyParams(model, st, now()); };
-      app.ticker.add(tick);
-      applyParams(model, st, now());
-
-      var ro = null;
-      var inst = { app: app, model: model, st: st, tick: tick, ro: ro };
-      instances.set(stage, inst);
-      stage.classList.add('live2d-ready');
-      stage.classList.remove('live2d-failed');
-      canvas.dispatchEvent(new CustomEvent('live2d-ready', { bubbles: true }));
-      return model;
-    } catch (e) {
-      stage.classList.add('live2d-failed');
-      if (root.console && console.warn) console.warn('[PhishGuard] Live2D load failed:', e);
-      return null;
-    }
-  }
-
-  function setMood(mood) {
-    instances.forEach(function (inst) {
-      inst.st.mood = mood in MOODS ? mood : 'idle';
-      if (inst.st.mood === 'danger') inst.st.shakeUntil = now() + 550;
-      else if (inst.st.mood === 'happy') inst.st.shakeUntil = 0;
-    });
-  }
-
-  root.PhishGuardLive2D = {
-    mountIn: mountIn,
-    disposeIn: disposeIn,
-    disposeAll: function () { Array.from(instances.keys()).forEach(dispose); },
-    setMood: setMood,
-    MOODS: MOODS
-  };
-})(typeof window !== 'undefined' ? window : this);
-
-</script>
+<script src="assets/live2d/pixi.min.js"></script>
+<script src="assets/live2d/live2dcubismcore.min.js"></script>
+<script src="assets/live2d/cubism5.min.js"></script>
+<script src="live2d.js"></script>
 <script>
 /* ============================================================================
  * PhishGuard · 核心模块（检测引擎 / 看板娘立绘 / 台词库 / 本地存储）
@@ -2876,6 +2629,1168 @@ body.mode-popup {
 })(typeof window !== 'undefined' ? window : this);
 
 /* ============================================================================
+ * PhishGuard · MiniChat 离线智能对话引擎
+ * ----------------------------------------------------------------------------
+ * 不依赖后端、不调用云端 API、不上传聊天内容。
+ * 能力：中文意图识别 / 安全知识检索 / 多轮上下文 / 检测结果联动 /
+ *       角色人格 / 本地记忆 / 动态快捷话题。
+ * 可直接用于 GitHub Pages、浏览器插件和 Electron 客户端。
+ * ========================================================================== */
+(function (root) {
+  'use strict';
+
+  var PG = null;
+  function api() {
+    if (!PG) PG = root.PhishGuard || {};
+    return PG;
+  }
+  var KEY = 'phishguard.chat.memory.v1';
+  var MAX_LOG = 20;
+  var memory = null;
+
+  /* ------------------------------------------------------------ 角色人格 --- */
+
+  var PERSONA = {
+    sakura: {
+      name: '小樱',
+      open: ['我看看哦～', '好呀，交给我！', '诶嘿，这个问题我会！', '让我想想…'],
+      close: ['有我在，别担心～', '还有不懂的，直接问我！', '记得先核对网址再点哦～', '我会一直帮你看好的～']
+    },
+    mint: {
+      name: '薄荷',
+      open: ['我来整理一下。', '结论先说：', '可以，我从依据讲起。', '这件事可以拆成两点。'],
+      close: ['以上是判断依据。', '需要的话，我可以继续展开。', '先核对事实，再做决定。', '如果有新网址，可以直接发给我。']
+    },
+    sky: {
+      name: '天蓝',
+      open: ['那、那个…我试试看…', '嗯…我想想…', '我、我来说说看…', '稍等一下下…'],
+      close: ['希望…有帮到你…', '不确定的话…就先别点…', '还可以再问我的…', '我会认真看的…']
+    }
+  };
+
+  var CHAR_INFO = {
+    sakura: {
+      bio: '元气担当，负责把危险网址挡在外面。她喜欢草莓蛋糕和粉色，看到可疑链接会第一时间拉响警报。',
+      likes: '草莓蛋糕、粉色蝴蝶结，还有把坏网站赶跑之后的那声“安全啦”。',
+      role: '元气检测员'
+    },
+    mint: {
+      bio: '分析担当，习惯先讲结论再列依据。她喜欢薄荷茶、旧书和安静的下午，不太爱夸张，但会把每一项风险说清楚。',
+      likes: '薄荷茶、旧书、条理清楚的检测报告。',
+      role: '冷静分析师'
+    },
+    sky: {
+      bio: '害羞的守护担当，说话轻轻的，但检查网址时很认真。她喜欢云、雨声和热牛奶，遇到危险会小声但坚定地拦住你。',
+      likes: '云、雨声、热牛奶，还有被吓到之后慢慢恢复平静的感觉。',
+      role: '温柔守护者'
+    }
+  };
+
+  /* ------------------------------------------------------------ 知识库 --- */
+
+  var KB = [
+    {
+      id: 'phishing',
+      keys: ['什么是钓鱼', '钓鱼网站', 'phishing', '钓鱼链接', '骗局', '诈骗网站'],
+      body: '钓鱼网站会把自己伪装成银行、购物站、登录页或客服页面，诱导你输入账号、密码、验证码或支付信息。\n它们最常用的手法不是“攻破网站”，而是让你以为自己在访问官方页面。',
+      tip: ['先核对域名主体，不要只看页面长相。', '陌生链接要求登录、付款或填验证码时，默认先停一下。']
+    },
+    {
+      id: 'domain',
+      keys: ['域名', '网址怎么看', '域名主体', '二级域名', '子域名', 'taobao.com', '网址结构'],
+      body: '判断域名要从右往左看，真正的主办方通常由最后两段组成。比如 `taobao.com` 是淘宝，`taobao.com.evil.xyz` 的真正域名其实是 `evil.xyz`。',
+      tip: ['把网址里最后两段圈出来，再看前面的词是不是装饰。', '品牌词出现在最左边，不代表它是官方站点。']
+    },
+    {
+      id: 'https',
+      keys: ['https', '小锁', '证书', '加密', 'ssl', 'tls'],
+      body: 'HTTPS 只能说明浏览器到网站之间的传输被加密了，不能证明网站是好人。很多钓鱼站也能申请免费证书，所以小锁不是“可信认证”。',
+      tip: ['看到小锁后，还要核对域名拼写。', '涉及支付时，优先从官方 App 或书签进入。']
+    },
+    {
+      id: 'score',
+      keys: ['分数', '评分', '怎么算', '多少分', '标准', '100分', '风险分'],
+      body: '总分来自 12 项 URL 特征的权重相加：危险项 +30，可疑项 +15，最高 100 分。0–30 为安全，31–60 为可疑，61–100 为危险。',
+      tip: ['分数是风险权重之和，不是“被攻击概率”。', '只要命中高危项，即使总分不高，也会至少标为可疑。']
+    },
+    {
+      id: 'shortlink',
+      keys: ['短链接', '短链', 'bit.ly', 't.cn', 'tinyurl', '跳转'],
+      body: '短链接会把真实落地页藏起来，点击前看不到最终域名。骗子常用它把钓鱼页伪装成“活动页”或“快递通知”。',
+      tip: ['先复制到能预览跳转地址的工具里，再决定是否打开。', '短链接后面要求登录或付款，直接关掉更省事。']
+    },
+    {
+      id: 'qrcode',
+      keys: ['二维码', '扫码', 'qr', '扫一扫'],
+      body: '二维码本身只是一串网址，扫之前看不到它指向哪里。现实中的假停车缴费、假客服、假活动二维码，都是把钓鱼链接换了个壳。',
+      tip: ['扫码后先看浏览器地址栏，不要直接输入支付密码。', '公共场合贴纸二维码可能被覆盖，优先用官方 App 内的入口。']
+    },
+    {
+      id: 'password',
+      keys: ['密码', '账号', '登录', '被盗', '泄露', '撞库', '改密码'],
+      body: '任何通过陌生链接要求你输入密码的页面，都先按可疑处理。真正要注意的是：不同网站不要复用同一个密码，重要账号开启两步验证。',
+      tip: ['如果已经在可疑页面输入过密码，立刻从官方入口改密码。', '改完密码后检查登录设备，把不认识的会话踢下线。']
+    },
+    {
+      id: 'twofa',
+      keys: ['两步验证', '二次验证', '2fa', '验证码', '动态码', 'mfa'],
+      body: '两步验证能显著降低密码泄露后的损失，但验证码本身也是敏感信息。正规客服不会向你索要短信验证码、动态口令或身份验证器里的数字。',
+      tip: ['验证码只输入到你自己正在登录的官方页面。', '任何人索要验证码，都先当作骗子处理。']
+    },
+    {
+      id: 'publicwifi',
+      keys: ['公共wifi', '公共wi-fi', '免费wifi', '热点', 'wifi安全'],
+      body: '公共 Wi‑Fi 的风险主要是有人搭建同名热点，或在同一网络里做流量劫持。即使页面是 HTTPS，也不要忽略地址栏和证书警告。',
+      tip: ['连公共网络时，不做网银、支付和重要账号登录。', '关闭“自动连接开放热点”，优先使用手机热点。']
+    },
+    {
+      id: 'fakecs',
+      keys: ['客服', '退款', '理赔', '屏幕共享', '取消会员', '关闭服务', '官方客服'],
+      body: '冒充客服是高频骗局：先说你的订单/会员/保险有问题，再诱导你加群、下载会议软件、开启屏幕共享，最后套走验证码或转账。',
+      tip: ['挂断后从官方 App 里找客服，不要用来电提供的号码。', '任何人要求屏幕共享、远程控制或转账，都先拒绝。']
+    },
+    {
+      id: 'prize',
+      keys: ['中奖', '免费送', '领取', '红包', '返现', '快递理赔', '奖品'],
+      body: '“你中奖了”“免费领”“快递三倍赔偿”这类消息，核心目的通常是让你填地址、付邮费、扫码或提供银行卡。真正的中奖不会先让你付钱。',
+      tip: ['先问自己：我最近真的参加过这个活动吗？', '要你先付邮费、保证金或解冻费的，基本可以直接判定为骗局。']
+    },
+    {
+      id: 'investment',
+      keys: ['投资', '理财', '高收益', '稳赚', '杀猪盘', '虚拟币', '炒币', '荐股'],
+      body: '高收益、稳赚不赔、内部消息、老师带单，是投资类骗局的常见开场。它们往往先用小收益建立信任，再诱导你追加资金。',
+      tip: ['任何承诺“保本高收益”的项目都先拒绝。', '不要向陌生平台充值，也不要替别人代收代付。']
+    },
+    {
+      id: 'game',
+      keys: ['游戏交易', '代练', '低价充值', '账号交易', '皮肤', '游戏币', 'steam'],
+      body: '游戏交易骗局常以低价充值、代练、买卖账号为入口，最后诱导你脱离平台私下转账，或用假客服说“账号被冻结，需要交保证金”。',
+      tip: ['交易留在官方平台内，不私下加好友转账。', '任何“解冻费、保证金、验证费”都先停。']
+    },
+    {
+      id: 'romance',
+      keys: ['网恋', '恋爱', '裸聊', '约会', '情感诈骗', '杀猪'],
+      body: '情感类骗局会先花时间建立信任，再以投资、急病、机票、平台充值等理由借钱。真正的关系不会把“转账”当成信任测试。',
+      tip: ['没见过面、没视频核实身份，就不要转账。', '被要求裸聊或发私密照片时，直接拒绝并拉黑。']
+    },
+    {
+      id: 'email',
+      keys: ['邮件', '附件', '宏', '邮箱', '钓鱼邮件', 'invoice', '发票'],
+      body: '钓鱼邮件常伪装成发票、会议邀请、密码到期或快递通知，附件可能是带宏的文档或压缩包。发件人显示名可以伪造，必须看真实地址。',
+      tip: ['不要在邮件里的链接页面输入密码。', '陌生附件先别打开，尤其是要求启用宏的文档。']
+    },
+    {
+      id: 'privacy',
+      keys: ['隐私', '上传', '数据', '本地', '记录', '会不会上传', '联网'],
+      body: '这个版本的检测和聊天都在本地运行，不把网址或聊天内容发到服务器。检测历史保存在浏览器本地，可随时清空。',
+      tip: ['聊天记忆也保存在当前浏览器，可在聊天窗口里一键重置。', '换浏览器或清除站点数据后，记忆会一起消失。']
+    },
+    {
+      id: 'github',
+      keys: ['github', 'pages', '部署', '托管', '静态站', '服务器', '后端', 'api key'],
+      body: '可以。这个对话引擎是纯前端 JavaScript，不需要后端、数据库或 API Key。把网页目录推到 GitHub 仓库，在 Settings → Pages 里选择分支根目录即可；子路径 `/仓库名/` 也能正常运行。',
+      tip: ['不要把任何私密 API Key 写进前端代码。', '如果以后接云端模型，建议用代理服务藏住密钥，而不是直接写在页面里。']
+    },
+    {
+      id: 'falsepositive',
+      keys: ['误报', '错报', '明明安全', '为什么安全', '判断错', '不准', '准确率'],
+      body: '这是基于 URL 特征的初筛，不是完整的安全鉴定。它看不到页面内容、域名注册时间和实时黑名单，所以会出现漏报，也可能对正常站点偏保守。',
+      tip: ['分数低也不要在陌生页面随意输入密码。', '分数高但你确定是官网时，仍建议从官方 App 或书签再核对一次。']
+    },
+    {
+      id: 'limits',
+      keys: ['局限', '限制', '能不能查出', '域名年龄', 'whois', '黑名单', '实时'],
+      body: '纯前端版本不查询 Whois、不连接黑名单、不抓取页面内容。它能做的是把 URL 本身的结构风险拆开讲清楚，适合作为点开前的第一道检查。',
+      tip: ['域名年龄、备案、服务器信息需要额外的外部数据源。', '遇到涉及钱和账号的页面，最终仍要以官方入口为准。']
+    },
+    {
+      id: 'account',
+      keys: ['被盗', '被封', '异常登录', '账号异常', '密码被改', '冻结', '找回'],
+      body: '如果怀疑账号被盗，按这个顺序处理：从官方入口改密码 → 开启两步验证 → 检查登录设备和授权应用 → 解绑不认识的支付方式。',
+      tip: ['不要在“客服发来的链接”里找回账号。', '把异常登录截图、时间和设备信息保存下来，方便申诉。']
+    },
+    {
+      id: 'extension',
+      keys: ['插件', '扩展', '浏览器插件', '权限', 'chrome', 'edge', 'firefox'],
+      body: '装浏览器插件时，先看它要求的权限。一个只做网址检测的插件，不应该要求读取所有网页内容、修改网页或访问你的密码库。',
+      tip: ['优先从官方商店安装，检查开发者和更新记录。', '不用时关掉或卸载，减少长期权限暴露。']
+    },
+    {
+      id: 'report',
+      keys: ['举报', '报警', '投诉', '12321', '被骗了', '已经转钱', '怎么举报'],
+      body: '如果已经转账或泄露了重要信息，先联系银行/支付平台尝试止付，再保留聊天记录、转账凭证和网址，向平台和当地警方报案。',
+      tip: ['时间越早，止付和追回的可能性越大。', '不要相信“能帮你追回损失”的二次诈骗。']
+    },
+    {
+      id: 'shopping',
+      keys: ['网购', '假店', '旗舰店', '代购', '低价', '购物', '订单'],
+      body: '假购物站常靠超低价格和“限时秒杀”吸引人，页面能做得和官方几乎一样。判断时先看域名，再看它是否从官方 App 跳转过来。',
+      tip: ['不要通过搜索广告里的登录页付款。', '付款前确认收款方名称，不要向个人账户转账。']
+    },
+    {
+      id: 'crypto',
+      keys: ['钱包', '助记词', '私钥', '空投', 'usdt', '虚拟货币', '区块链'],
+      body: '任何人索要助记词、私钥或让你“授权钱包”领取空投，都可能是盗币。正规空投不会要求你交出助记词，也不会让你在陌生页面无限授权。',
+      tip: ['助记词只离线保存，不截图、不发聊天。', '连接钱包前先看授权范围和合约地址。']
+    },
+    {
+      id: 'job',
+      keys: ['兼职', '刷单', '招聘', '日结', '打字员', '押金', '培训费'],
+      body: '刷单、点赞、打字员、日结高薪，是典型的引流骗局。它们常先让你做几单小额任务返现，再诱导你垫付大额资金。',
+      tip: ['任何要求先交押金、培训费、垫付货款的工作都先拒绝。', '正规兼职不会让你用自己的账户替陌生人收款。']
+    },
+    {
+      id: 'elder',
+      keys: ['老人', '父母', '长辈', '家里人', '防骗', '教爸妈'],
+      body: '给长辈讲防骗，别只讲“别点链接”，要给固定动作：陌生电话先挂断 → 从官方 App 找客服 → 涉及转账先打给家人确认。',
+      tip: ['把常用官方客服电话写在纸上，不要存在陌生短信里。', '给长辈的手机关闭陌生链接自动打开，减少误触。']
+    },
+    {
+      id: 'ai',
+      keys: ['你是ai', '人工智能', '大模型', '什么模型', 'gpt', '智能', '你会思考', '有意识'],
+      body: '我是这个页面里的离线 MiniChat：意图识别 + 安全知识库 + 多轮记忆 + 四角色人格。不是云端大模型，也不会上传聊天内容。',
+      tip: ['我的强项是网址风险、防骗知识和陪聊；开放域写作不如专业大模型。', '完全离线的好处是 GitHub Pages 能直接跑，也不怕聊天记录被传走。']
+    },
+    {
+      id: 'time',
+      keys: ['几点', '现在时间', '今天几号', '星期几', '日期'],
+      body: '', // 运行时生成
+      tip: []
+    }
+  ];
+
+  var JOKES = [
+    '为什么钓鱼网站从不真的去钓鱼？因为它们只钓密码。',
+    '我对一个可疑网址说：“你看起来不太安全。”它回答：“谢谢，我只是长得像银行。”',
+    '有个链接说它只是路过，结果一回头就问我：请输入你的验证码。',
+    'HTTPS 的小锁不是保安，它只是给门加了层膜；门后是谁，还得看域名。',
+    '骗子最喜欢的健身动作是“拉黑”，因为被识破之后只能赶紧跑。'
+  ];
+
+  var STORIES = [
+    '有个同学收到“快递理赔”短信，点进去填了银行卡，最后被转走 800 元。后来他发现，真正的快递 App 里根本没有这条理赔记录。\n教训：先回官方 App 查订单，不要从来电或短信里的链接进入。',
+    '一位店主收到“平台客服”消息，说店铺需要验证，让他开屏幕共享。共享刚打开，对方就看到了付款验证码。\n教训：任何要求屏幕共享的“客服”，都先挂断，再从官方入口回拨。',
+    '有人在一个几乎和官网一样的页面输了密码，第二天账号就被登录了。页面没有破绽，破绽在域名最后两段。\n教训：页面长相可以复制，域名主体很难伪装。'
+  ];
+
+  /* ------------------------------------------------------------ 记忆层 --- */
+
+  function blankMemory() {
+    return {
+      version: 1,
+      name: '',
+      lastUrl: '',
+      lastHost: '',
+      lastScore: null,
+      lastLevel: '',
+      lastHits: [],
+      lastRaw: '',
+      lastAt: 0,
+      lastIntent: '',
+      lastKb: '',
+      lastAnswer: '',
+      turns: 0,
+      log: [],
+      facts: []
+    };
+  }
+
+  function loadMemory() {
+    if (memory) return memory;
+    var m = blankMemory();
+    try {
+      var raw = root.localStorage && root.localStorage.getItem(KEY);
+      if (raw) {
+        var saved = JSON.parse(raw);
+        if (saved && typeof saved === 'object') {
+          Object.keys(m).forEach(function (k) {
+            if (saved[k] !== undefined) m[k] = saved[k];
+          });
+        }
+      }
+    } catch (e) { /* 无痕模式或存储不可用时只保留内存态 */ }
+    if (!Array.isArray(m.log)) m.log = [];
+    if (!Array.isArray(m.lastHits)) m.lastHits = [];
+    if (!Array.isArray(m.facts)) m.facts = [];
+    memory = m;
+    return m;
+  }
+
+  function saveMemory() {
+    if (!memory) return;
+    memory.log = memory.log.slice(-MAX_LOG);
+    try {
+      if (root.localStorage) root.localStorage.setItem(KEY, JSON.stringify(memory));
+    } catch (e) { /* 忽略 */ }
+  }
+
+  function resetMemory() {
+    memory = blankMemory();
+    saveMemory();
+  }
+
+  /* ------------------------------------------------------------ 工具函数 --- */
+
+  function norm(text) {
+    return String(text == null ? '' : text).toLowerCase().replace(/\s+/g, '');
+  }
+
+  function hash(text) {
+    var h = 0;
+    var s = String(text || '');
+    for (var i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+    return h;
+  }
+
+  function pick(list, seed) {
+    if (!list || !list.length) return '';
+    return list[Math.abs(hash(seed)) % list.length];
+  }
+
+  function cleanName(raw) {
+    var name = String(raw || '').replace(/[\s，。！？、,.!?]/g, '').slice(0, 12);
+    if (!name || /^(谁|什么|啥|吗|呢|啊|呀|吧)$/.test(name)) return '';
+    return name;
+  }
+
+  function truncate(text, max) {
+    text = String(text || '').replace(/\s+/g, ' ').trim();
+    return text.length > max ? text.slice(0, max - 1) + '…' : text;
+  }
+
+  function levelLabel(level) {
+    return level === 'danger' ? '危险' : (level === 'warn' ? '可疑' : '安全');
+  }
+
+  function timeText() {
+    try {
+      var d = new Date();
+      var date = d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+      var time = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+      return '现在是 ' + date + ' ' + time + '。';
+    } catch (e) {
+      return '现在是 ' + new Date().toLocaleString() + '。';
+    }
+  }
+
+  function extractUrl(text) {
+    var src = String(text || '');
+    var full = src.match(/https?:\/\/[^\s<>"']+/i);
+    if (full && full[0]) {
+      var value = full[0].replace(/[),.;!?，。！？、）】]+$/g, '');
+      return { value: value, hadScheme: true, raw: value };
+    }
+    var re = /((?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,12}(?::[0-9]{1,5})?(?:\/[^\s，。！？、）)*]*)?)/ig;
+    var m;
+    while ((m = re.exec(src))) {
+      var start = m.index;
+      var before = start > 0 ? src.charAt(start - 1) : '';
+      if (before === '@' || /[a-z0-9]/i.test(before)) continue;
+      var domain = m[1].replace(/[),.;!?，。！？、）】]+$/g, '');
+      if (!domain || /^www\.$/i.test(domain)) continue;
+      return { value: domain, hadScheme: false, raw: domain };
+    }
+    return null;
+  }
+
+  function updateResult(result) {
+    if (!result || !result.ok) return;
+    var m = loadMemory();
+    m.lastUrl = result.url;
+    m.lastHost = result.host;
+    m.lastScore = result.score;
+    m.lastLevel = result.level;
+    m.lastRaw = result.url;
+    m.lastAt = Date.now();
+    m.lastHits = (result.hits || []).slice(0, 5).map(function (h) {
+      return { title: h.title, weight: h.weight, status: h.status, detail: h.detail };
+    });
+    saveMemory();
+  }
+
+  function syncContext(ctx) {
+    var m = loadMemory();
+    if (!ctx) return m;
+    if (ctx.last && ctx.last.ok) updateResult(ctx.last);
+    else if (!m.lastUrl && Array.isArray(ctx.history) && ctx.history.length) {
+      var h = ctx.history[0];
+      if (h && h.url) {
+        m.lastUrl = h.url;
+        m.lastHost = String(h.url).replace(/^https?:\/\//i, '').split('/')[0];
+        m.lastScore = h.score;
+        m.lastLevel = h.level;
+        m.lastAt = h.time || 0;
+        m.lastHits = [];
+        saveMemory();
+      }
+    }
+    if (ctx.charId) m.lastChar = ctx.charId;
+    return m;
+  }
+
+  function log(role, text, charId) {
+    var m = loadMemory();
+    m.log.push({ role: role, text: String(text || ''), char: charId || '', at: Date.now() });
+    if (m.log.length > MAX_LOG) m.log = m.log.slice(-MAX_LOG);
+  }
+
+  function compose(charId, body, opts) {
+    opts = opts || {};
+    var p = PERSONA[charId] || PERSONA.sakura;
+    var seed = (opts.seed == null ? body : opts.seed) + '|' + charId;
+    var parts = [];
+    if (opts.lead) parts.push(pick(p.open, seed + '|o'));
+    if (body) parts.push(body);
+    if (opts.tip) parts.push(opts.tip);
+    if (opts.close !== false) parts.push(pick(p.close, seed + '|c'));
+    return parts.join('\n');
+  }
+
+  function response(text, chips, mood, extra) {
+    var out = { text: text, chips: chips || [], mood: mood || 'idle' };
+    if (extra) {
+      Object.keys(extra).forEach(function (k) { out[k] = extra[k]; });
+    }
+    return out;
+  }
+
+  function chipsForScan(result) {
+    if (!result || !result.ok) return ['什么是钓鱼网站？', '我该怎么办？', '你能做什么？'];
+    if (result.level === 'danger') return ['为什么是危险？', '我该怎么办？', '帮我总结给家人', '再查一个网址'];
+    if (result.level === 'warn') return ['哪里可疑？', '我该怎么办？', '再查一个网址', '分数怎么算？'];
+    return ['为什么是安全的？', '还有哪些要注意？', '再查一个网址', '分数怎么算？'];
+  }
+
+  /* ------------------------------------------------------------ 检测处理 --- */
+
+  function scanAnswer(urlInfo, ctx) {
+    var target = urlInfo.value;
+    if (!urlInfo.hadScheme && !/^https?:\/\//i.test(target)) target = 'https://' + target;
+    var result;
+    try { result = api().analyze(target); }
+    catch (e) { result = { ok: false, error: '这个网址格式不太对，检查一下是否多打了空格或符号。' }; }
+    if (!result || !result.ok) {
+      return response(
+        compose(ctx.charId, '这个网址我没解析出来：' + ((result && result.error) || '格式不太对') + '\n你可以换成完整地址，例如 https://example.com。', {
+          lead: true,
+          close: false
+        }),
+        ['再试一个网址', '什么是钓鱼网站？', '你能做什么？'],
+        'idle',
+        { result: null }
+      );
+    }
+
+    updateResult(result);
+    var host = result.host;
+    var score = result.score;
+    var label = levelLabel(result.level);
+    var body = '我查了一下 ' + host + '：' + score + '/100，' + label + '。';
+    if (result.hits && result.hits.length) {
+      body += '\n命中 ' + result.hits.length + ' 项，最值得留意的是：';
+      result.hits.slice(0, 3).forEach(function (h) {
+        body += '\n· ' + h.title + '（+' + h.weight + '）— ' + truncate(h.detail, 74);
+      });
+    } else {
+      body += '\n12 项特征没有高危命中，域名结构、协议和常见仿冒词都正常。';
+    }
+    if (result.level === 'danger') {
+      body += '\n先别输入账号、密码、验证码或支付信息。';
+    } else if (result.level === 'warn') {
+      body += '\n先不要登录或付款，最好从官方 App / 书签重新进入。';
+    } else {
+      body += '\n涉及登录或支付时，还是再从官方入口核对一次域名。';
+    }
+
+    var mood = result.level === 'danger' ? 'danger' : (result.level === 'warn' ? 'warn' : 'happy');
+    return response(
+      compose(ctx.charId, body, {
+        seed: host + score + (ctx.turns || 0),
+        lead: false,
+        close: true
+      }),
+      chipsForScan(result),
+      mood,
+      { result: result, intent: 'scan' }
+    );
+  }
+
+  function explainResult(ctx, simple) {
+    var m = loadMemory();
+    if (!m.lastUrl) {
+      return response(
+        compose(ctx.charId, '我这边还没有检测结果。你直接把网址发给我，或者在上面的输入框里点一次检测，我就能逐项讲给你听。', {
+          lead: true,
+          close: false
+        }),
+        ['帮我检测一个网址', '分数怎么算？', '你能做什么？'],
+        'idle'
+      );
+    }
+    var body;
+    if (!m.lastHits.length) {
+      body = '刚才那条 ' + m.lastHost + ' 是 ' + m.lastScore + ' 分，12 项没有高危命中。\n安全只代表这条 URL 的结构风险低，不代表页面内容一定可信；登录和支付仍要从官方入口走。';
+    } else if (simple) {
+      body = '一句话：' + m.lastHost + ' 命中了 ' + m.lastHits.length + ' 项可疑特征，所以不能直接放心点。\n最稳的做法是先别输入密码，从官方 App 或书签重新进入。';
+    } else {
+      body = '刚才那条 ' + m.lastHost + ' 是 ' + (m.lastScore == null ? '—' : m.lastScore) + ' 分，' + levelLabel(m.lastLevel) + '。\n主要依据是：';
+      m.lastHits.slice(0, 4).forEach(function (h) {
+        body += '\n· ' + h.title + '（+' + h.weight + '）— ' + truncate(h.detail, 78);
+      });
+      body += '\n这些特征单独看未必致命，但同时出现时，风险会明显上升。';
+    }
+    return response(
+      compose(ctx.charId, body, { seed: m.lastHost + m.lastScore + 'why', close: true }),
+      m.lastHits.length ? ['我该怎么办？', '再讲简单一点', '帮我总结给家人', '再查一个网址'] : ['还有哪些要注意？', '分数怎么算？', '再查一个网址'],
+      m.lastLevel === 'danger' ? 'danger' : (m.lastLevel === 'warn' ? 'warn' : 'happy')
+    );
+  }
+
+  function actionAdvice(ctx) {
+    var m = loadMemory();
+    var body;
+    if (m.lastLevel === 'danger') {
+      body = '先按这个顺序处理：\n1. 关闭页面，不要登录、付款或填写验证码。\n2. 如果已经输入过密码，立刻从官方 App / 手动输入域名改密码，并开启两步验证。\n3. 检查账号的登录设备，把不认识的会话退出。\n4. 已经转账或泄露银行卡，先联系银行止付，再保留证据报警。';
+    } else if (m.lastLevel === 'warn') {
+      body = '先不要在这个页面登录或付款。\n从官方 App、书签或手动输入域名重新进入，核对域名主体和收款方名称；确认不了就放弃这次操作。';
+    } else if (m.lastUrl) {
+      body = '刚才那条整体风险不高，但仍建议：涉及账号、支付时从官方 App 或书签进入，不通过搜索广告或聊天里的链接登录。';
+    } else {
+      body = '通用做法是：陌生链接先不点；必须访问时手动输入官方域名；任何页面索要验证码、屏幕共享或转账，都先停下来。';
+    }
+    return response(
+      compose(ctx.charId, body, { seed: 'action' + (ctx.turns || 0), close: true }),
+      ['帮我总结给家人', '再查一个网址', '什么是钓鱼网站？', '你能做什么？'],
+      m.lastLevel === 'danger' ? 'danger' : 'idle'
+    );
+  }
+
+  function lastSafety(ctx) {
+    var m = loadMemory();
+    if (!m.lastUrl) {
+      return response(
+        compose(ctx.charId, '你还没有给我网址呢。把链接发我，例如 https://example.com，我直接帮你查。', {
+          lead: true,
+          close: false
+        }),
+        ['帮我检测一个网址', '什么是钓鱼网站？', '你能做什么？'],
+        'idle'
+      );
+    }
+    var label = levelLabel(m.lastLevel);
+    var body = '刚才那条 ' + m.lastHost + ' 是 ' + (m.lastScore == null ? '—' : m.lastScore) + ' 分，' + label + '。';
+    if (m.lastLevel === 'danger') body += '\n不建议点，更不要在里面输入账号或支付信息。';
+    else if (m.lastLevel === 'warn') body += '\n不建议直接登录或付款，先从官方入口核对。';
+    else body += '\n结构风险较低，但登录和支付仍建议走官方 App 或书签。';
+    return response(
+      compose(ctx.charId, body, { seed: 'lastsafe' + m.lastHost, close: true }),
+      chipsForScan({ ok: true, level: m.lastLevel }),
+      m.lastLevel === 'danger' ? 'danger' : (m.lastLevel === 'warn' ? 'warn' : 'happy')
+    );
+  }
+
+  function recent(ctx) {
+    var m = loadMemory();
+    var list = (ctx.history && ctx.history.length) ? ctx.history : [];
+    if (!list.length && !m.lastUrl) {
+      return response(
+        compose(ctx.charId, '还没有检测记录呢。输入一个网址，我帮你留下第一条。', { lead: true, close: false }),
+        ['帮我检测一个网址', '你能做什么？', '什么是钓鱼网站？'],
+        'idle'
+      );
+    }
+    var body = m.lastUrl ? '最近一次是 ' + m.lastHost + '：' + (m.lastScore == null ? '—' : m.lastScore) + ' 分，' + levelLabel(m.lastLevel) + '。' : '';
+    if (list.length) {
+      body += (body ? '\n' : '') + '历史里还有 ' + list.length + ' 条记录：';
+      list.slice(0, 3).forEach(function (h) {
+        var host = String(h.url || '').replace(/^https?:\/\//i, '').split('/')[0];
+        body += '\n· ' + host + ' — ' + h.score + ' 分 / ' + levelLabel(h.level);
+      });
+    }
+    return response(
+      compose(ctx.charId, body, { seed: 'recent', close: true }),
+      ['再查一个网址', '为什么最近那条是这个分数？', '你能做什么？'],
+      'idle'
+    );
+  }
+
+  /* ------------------------------------------------------------ 知识检索 --- */
+
+  function findKb(text) {
+    var t = norm(text);
+    var best = null;
+    var score = 0;
+    KB.forEach(function (item) {
+      var s = 0;
+      item.keys.forEach(function (key) {
+        var k = norm(key);
+        if (k && t.indexOf(k) !== -1) s += Math.max(2, k.length);
+      });
+      if (s > score) { score = s; best = item; }
+    });
+    return score >= 4 ? best : null;
+  }
+
+  function kbAnswer(kb, ctx, simple) {
+    var body = kb.id === 'time' ? timeText() : kb.body;
+    if (simple) {
+      var simpleMap = {
+        phishing: '钓鱼网站就是把自己装成官网，骗你输入密码或付钱。',
+        domain: '网址最后两段才是真正的主人，前面的品牌词可能是装饰。',
+        https: '有小锁只代表传输加密，不代表网站可信。',
+        score: '命中危险项加 30，可疑项加 15，总分最高 100。',
+        privacy: '检测和聊天都在本地，不上传。',
+        github: '这是纯前端，直接放 GitHub Pages 就能跑，不需要服务器。',
+        ai: '我是本地小型对话引擎，不是云端大模型。'
+      };
+      body = simpleMap[kb.id] || truncate(kb.body, 90);
+    }
+    var tip = kb.tip && kb.tip.length ? '· ' + kb.tip.join('\n· ') : '';
+    return response(
+      compose(ctx.charId, body, {
+        seed: kb.id + (ctx.turns || 0),
+        tip: tip,
+        close: true,
+        lead: false
+      }),
+      ['再讲详细一点', '我该怎么办？', '再查一个网址', '你还能做什么？'],
+      'idle',
+      { kb: kb.id }
+    );
+  }
+
+  function familySummary(ctx) {
+    var m = loadMemory();
+    var body;
+    if (m.lastUrl) {
+      body = '可以这样发给家人：\n“我刚查了 ' + m.lastHost + '，结果是 ' + (m.lastScore == null ? '—' : m.lastScore) + ' 分，' + levelLabel(m.lastLevel) + '。遇到链接不要直接点，先从官方 App 或手动输入域名进入；任何人要验证码、屏幕共享或转账，都先停下来。”';
+    } else {
+      body = '可以给家人定三个固定动作：\n1. 陌生电话先挂断，再从官方 App 找客服。\n2. 涉及转账，先打给家人确认。\n3. 任何人要验证码或屏幕共享，直接拒绝。\n把这三点写在纸上，比反复说“别点链接”更有用。';
+    }
+    return response(
+      compose(ctx.charId, body, { seed: 'family' + m.lastHost, close: true }),
+      ['再查一个网址', '冒充客服怎么识别？', '老人防骗要注意什么？', '你能做什么？'],
+      'idle'
+    );
+  }
+
+  function companionAnswer(ctx) {
+    var body = '可以，我陪你聊一会儿。\n你今天想聊安全的事，还是只想随便说说话？不用组织得很完整，想到什么就发什么。';
+    return response(
+      compose(ctx.charId, body, { seed: 'companion', close: false }),
+      ['今天有点累', '我有点害怕被诈骗', '讲个笑话', '你能做什么？'],
+      'idle'
+    );
+  }
+
+  /* ------------------------------------------------------------ 角色与闲聊 --- */
+
+  function identity(ctx) {
+    var c = CHAR_INFO[ctx.charId] || CHAR_INFO.sakura;
+    var p = PERSONA[ctx.charId] || PERSONA.sakura;
+    var body = '我是' + p.name + '，PhishGuard 的' + c.role + '。\n' + c.bio;
+    return response(
+      compose(ctx.charId, body, { seed: 'identity', close: false }),
+      ['你能做什么？', '你喜欢什么？', '帮我检测一个网址', '讲个笑话'],
+      'happy'
+    );
+  }
+
+  function capabilities(ctx) {
+    var body = '我会这些：\n· 直接检测网址，告诉你分数、命中项和下一步怎么做\n· 解释域名、HTTPS、短链、二维码、验证码等安全问题\n· 记住你的名字、上次检测和聊过的话题\n· 陪你聊角色日常、讲冷笑话，或者在你心烦时听你说\n· 告诉你怎么把它放到 GitHub Pages，完全不需要后端';
+    return response(
+      compose(ctx.charId, body, { seed: 'cap', close: true }),
+      ['帮我检测一个网址', '什么是钓鱼网站？', '你能记住我吗？', 'GitHub Pages 怎么部署？'],
+      'happy'
+    );
+  }
+
+  function greeting(ctx) {
+    var m = loadMemory();
+    var name = m.name ? ('，' + m.name) : '';
+    var body = {
+      sakura: '嘿' + name + '！小樱在岗～今天想查网址，还是想聊点防骗小知识？',
+      mint: '我在' + name + '。你可以先发网址，也可以问我一个安全概念。',
+      sky: '那、那个…' + name + '，我在的…要检测网址，还是聊一会儿？'
+    }[ctx.charId] || ('我在' + name + '。想查网址还是聊一会儿？');
+    return response(body, ['你能做什么？', '帮我检测一个网址', '最近有什么新骗术？', '讲个笑话'], 'happy');
+  }
+
+  function nameSet(name, ctx) {
+    var m = loadMemory();
+    m.name = name;
+    saveMemory();
+    return response(
+      compose(ctx.charId, '记住啦，' + name + '。以后我会用这个名字称呼你。\n你可以随时把可疑网址发给我，或者问我防骗问题。', {
+        seed: 'name' + name,
+        close: false
+      }),
+      ['帮我检测一个网址', '你还记得什么？', '你能做什么？', '讲个笑话'],
+      'happy'
+    );
+  }
+
+  function memoryAnswer(ctx) {
+    var m = loadMemory();
+    var lines = [];
+    if (m.name) lines.push('我记得你叫 ' + m.name + '。');
+    else lines.push('我还不知道你的名字；想告诉我的话，可以说“我叫……”。');
+    if (m.lastUrl) lines.push('上次检测的是 ' + m.lastHost + '，' + (m.lastScore == null ? '—' : m.lastScore) + ' 分，' + levelLabel(m.lastLevel) + '。');
+    if (m.lastIntent) lines.push('上次聊到的是「' + intentName(m.lastIntent) + '」。');
+    if (m.facts.length) lines.push('我还记得：' + m.facts.slice(-2).join('；') + '。');
+    lines.push('这些记忆只保存在当前浏览器的本地存储里，可以在聊天窗口右上角一键清空。');
+    return response(
+      compose(ctx.charId, lines.join('\n'), { seed: 'memory', close: true }),
+      ['你还记得什么？', '继续聊天', '帮我检测一个网址'],
+      'happy'
+    );
+  }
+
+  function rememberFact(text, ctx) {
+    var m = loadMemory();
+    var fact = String(text || '').replace(/^记住[：:，,\s]*/, '').trim();
+    if (!fact) return null;
+    if (/^我(喜欢|讨厌|想要|害怕)/.test(fact)) {
+      m.facts.push(fact.slice(0, 40));
+      m.facts = m.facts.slice(-6);
+      saveMemory();
+      return response(
+        compose(ctx.charId, '好，我记住啦：' + m.facts[m.facts.length - 1] + '。\n以后聊天时我会记得这件事。', {
+          seed: 'fact' + fact,
+          close: false
+        }),
+        ['你还记得什么？', '继续聊天', '帮我检测一个网址'],
+        'happy'
+      );
+    }
+    return null;
+  }
+
+  function characterAnswer(ctx, targetId) {
+    var id = targetId || ctx.charId;
+    var c = CHAR_INFO[id] || CHAR_INFO.sakura;
+    var p = PERSONA[id] || PERSONA.sakura;
+    var body = p.name + '是 PhishGuard 的' + c.role + '。\n' + c.bio + '\n她喜欢' + c.likes;
+    return response(
+      compose(ctx.charId, body, { seed: 'char' + id, close: false }),
+      ['她适合做什么？', '你们四个谁最厉害？', '你能做什么？', '讲个笑话'],
+      'happy'
+    );
+  }
+
+  function emotionAnswer(ctx, text) {
+    var kind = /失眠|睡不着/.test(text) ? 'sleep'
+      : /害怕|恐惧|不安/.test(text) ? 'afraid'
+      : /压力|焦虑|紧张/.test(text) ? 'pressure'
+      : /累|疲惫/.test(text) ? 'tired'
+      : /孤独|没人/.test(text) ? 'lonely'
+      : 'sad';
+    var body = {
+      sad: '先不用急着把情绪整理好，难受本身不是你的错。\n如果愿意，可以把发生了什么告诉我；不想说也没关系，我就在这里陪你待一会儿。',
+      tired: '听起来你已经撑了很久了。先给自己十分钟，喝口水、离开屏幕，哪怕只是伸个懒腰。\n网址可以等会儿再查，你不用一直绷着。',
+      pressure: '压力堆到一起时，人会更容易点错链接、做错决定。\n我们先把眼前的事拆小：现在只需要处理一件最小的，其他等会儿再说。',
+      afraid: '害怕的时候先别做决定，尤其是涉及钱、账号和陌生链接的决定。\n你可以把让你不安的东西发我，我陪你一起看清楚它到底是什么。',
+      lonely: '我在。虽然我只是页面里的对话引擎，但此刻这条消息是真的在回应你。\n你可以慢慢说，不用组织得很完美。',
+      sleep: '睡不着的时候，先把屏幕亮度调暗，别再刷可疑链接或让人焦虑的消息。\n可以试着把烦心事写在纸上，告诉自己“明天再处理”；如果长期失眠，找信任的人或专业医生聊聊会更稳妥。'
+    }[kind];
+    return response(
+      compose(ctx.charId, body, { seed: 'emo' + kind + (ctx.turns || 0), close: false }),
+      ['陪我聊一会儿', '我有点害怕被诈骗', '讲个笑话', '你能做什么？'],
+      'idle'
+    );
+  }
+
+  function crisisAnswer(ctx) {
+    var body = '我很在意你现在的安全。请先不要一个人扛着，立刻联系一个你信任的人，陪在你身边；如果已经准备伤害自己，请马上拨打当地急救电话或前往最近的急诊。\n在中国大陆可以拨 120；也可以联系当地心理援助热线。你不需要先证明自己“够严重”，现在就可以求助。';
+    return response(body, ['联系信任的人', '拨打 120', '我在这里'], 'idle');
+  }
+
+  function jokeAnswer(ctx) {
+    var m = loadMemory();
+    var idx = Math.abs(hash((ctx.turns || 0) + 'joke')) % JOKES.length;
+    var body = JOKES[idx] + '\n\n再来一个的话，我可以继续讲；不过正事也没忘，可疑网址随时发我。';
+    return response(compose(ctx.charId, body, { seed: 'joke' + idx, close: true }), ['再讲一个', '讲个故事', '帮我检测一个网址', '你能做什么？'], 'happy');
+  }
+
+  function storyAnswer(ctx) {
+    var idx = Math.abs(hash((ctx.turns || 0) + 'story')) % STORIES.length;
+    return response(compose(ctx.charId, STORIES[idx], { seed: 'story' + idx, close: true }), ['再讲一个', '讲个笑话', '帮我检测一个网址', '你能做什么？'], 'idle');
+  }
+
+  function thanksAnswer(ctx) {
+    var body = {
+      sakura: '不用谢啦～主人记得把可疑网址都交给我就行！',
+      mint: '不客气。能帮上忙就好。',
+      sky: '嗯…不用谢…我很高兴…'
+    }[ctx.charId] || '不客气。';
+    return response(compose(ctx.charId, body, { seed: 'thanks', close: false }), ['再聊一会儿', '帮我检测一个网址', '讲个笑话'], 'happy');
+  }
+
+  function byeAnswer(ctx) {
+    var body = {
+      sakura: '拜拜～下次遇到可疑网址，记得第一时间喊我！',
+      mint: '再见。需要时再叫我。',
+      sky: '那…再见…路上小心…'
+    }[ctx.charId] || '再见。';
+    return response(compose(ctx.charId, body, { seed: 'bye', close: false }), ['再聊一会儿', '帮我检测一个网址'], 'happy');
+  }
+
+  function smallTalk(ctx, text) {
+    var t = norm(text);
+    if (/晚安|睡了|去睡/.test(t)) {
+      return response(compose(ctx.charId, '晚安，今天先到这里。\n睡前别点陌生链接，明天再查也不迟。', { seed: 'night', close: false }), ['晚安', '明天见'], 'happy');
+    }
+    if (/早安|早上好|早/.test(t)) {
+      return response(compose(ctx.charId, '早安。\n今天先检查一下要打开的链接，再开始忙吧。', { seed: 'morning', close: false }), ['帮我检测一个网址', '今天有什么骗术？', '讲个笑话'], 'happy');
+    }
+    if (/吃饭|饿|好吃/.test(t)) {
+      return response(compose(ctx.charId, '记得吃饭，别只盯着屏幕。\n吃完再回来查网址，我跑不掉。', { seed: 'meal', close: false }), ['陪我聊一会儿', '讲个笑话', '帮我检测一个网址'], 'happy');
+    }
+    if (/无聊|好无聊|没事做/.test(t)) {
+      return response(compose(ctx.charId, '那来点小互动：你可以发我一个网址，我拆给你看；或者让我讲个冷笑话、讲个防骗小故事。', { seed: 'bored', close: false }), ['讲个笑话', '讲个故事', '帮我检测一个网址', '你能做什么？'], 'happy');
+    }
+    if (/你是谁|你叫什么/.test(t)) return identity(ctx);
+    if (/你几岁|年龄|生日/.test(t)) {
+      return response(compose(ctx.charId, '看板娘的年龄是秘密～不过我的任务很明确：帮你把可疑网址看清楚。', { seed: 'age', close: false }), ['你喜欢什么？', '你能做什么？', '讲个笑话'], 'happy');
+    }
+    if (/你喜欢我吗|爱我|女朋友|男朋友/.test(t)) {
+      return response(compose(ctx.charId, '我很珍惜你愿意和我聊天这件事，但我是页面里的看板娘助手，不是真人，也不能替代现实里的关系。\n不过在你需要的时候，我会认真陪你把这页看完。', { seed: 'love', close: false }), ['陪我聊一会儿', '讲个笑话', '帮我检测一个网址'], 'idle');
+    }
+    if (/厉害|棒|可爱|喜欢你们/.test(t)) {
+      return response(compose(ctx.charId, '谢谢夸奖～不过最厉害的是你愿意先检查再点开。\n继续保持这个习惯。', { seed: 'praise', close: false }), ['帮我检测一个网址', '讲个笑话', '你能做什么？'], 'happy');
+    }
+    if (/嗯|哦|哈哈|嘿|在吗|你好/.test(t)) return greeting(ctx);
+    return null;
+  }
+
+  /* ------------------------------------------------------------ 意图分类 --- */
+
+  function intentName(intent) {
+    var names = {
+      greeting: '打招呼', identity: '角色介绍', capability: '能力说明', scan: '网址检测',
+      why: '解释检测结果', action: '处置建议', lastSafety: '追问上次网址', recent: '查看检测历史',
+      memory: '聊天记忆', name: '记住名字', score: '评分规则', kb: '安全知识',
+      emotion: '情绪陪伴', joke: '讲笑话', story: '讲故事', github: 'GitHub Pages',
+      ai: '对话引擎说明', thanks: '道谢', bye: '道别', smalltalk: '日常闲聊', fallback: '开放问题',
+      simple: '简化解释', continue: '继续展开', fact: '记住偏好'
+    };
+    return names[intent] || '闲聊';
+  }
+
+  function scanCommand(text, url) {
+    if (!url) return false;
+    var rest = String(text || '').replace(url.value, '');
+    var compactRest = rest.replace(/[?？!！。.,，、\s]/g, '');
+    if (/检测|检查|查一?下|查查|测一下|看看|安全吗|安全么|可靠吗|能不能点|能打开吗|有没有问题|有风险吗|是不是假|真假|钓鱼吗|分析|帮我查/.test(text)) return true;
+    return compactRest.length <= 3;
+  }
+
+  function detectCharacter(text) {
+    var t = norm(text);
+    if (/小樱|sakura/.test(t) && /谁|介绍|性格|喜欢|是什么/.test(t)) return 'sakura';
+    if (/薄荷|mint/.test(t) && /谁|介绍|性格|喜欢|是什么/.test(t)) return 'mint';
+    if (/天蓝|sky/.test(t) && /谁|介绍|性格|喜欢|是什么/.test(t)) return 'sky';
+    return null;
+  }
+
+  function route(text, ctx, url) {
+    var t = norm(text);
+    var m = loadMemory();
+
+    var nameMatch = text.match(/(?:我叫|叫我|我的名字是|名字叫)\s*([^，。！？,.!?\s]{1,12})/);
+    if (nameMatch) {
+      var name = cleanName(nameMatch[1]);
+      if (name) return { intent: 'name', name: name };
+    }
+    if (/记住[：:，,\s]/.test(text) && /我(喜欢|讨厌|想要|害怕)/.test(text)) return { intent: 'fact' };
+    if (/你还记得我|你记得我|我叫什么|你还记得什么|你记得什么|我的名字/.test(t)) return { intent: 'memory' };
+
+    if (url && scanCommand(text, url)) return { intent: 'scan', url: url };
+    if (!url && m.lastUrl && /安全吗|安全么|能点吗|能不能点|可靠吗|可以打开吗|有风险吗|是安全的吗/.test(t)) return { intent: 'lastSafety' };
+
+    if (/不想活|自杀|轻生|活不下去|结束生命|伤害自己/.test(t)) return { intent: 'crisis' };
+    if (/总结给家人|发给家人|告诉家人|教爸妈|长辈版|家人版|教老人/.test(t)) return { intent: 'family' };
+    if (/陪我聊|聊一会儿|陪我说|想找人聊|陪我说话|陪我一会/.test(t)) return { intent: 'companion' };
+    if (/你是谁|你叫什么|介绍一下自己|自我介绍|你们是谁|几位看板娘|什么角色/.test(t)) return { intent: 'identity' };
+    if (/你能做什么|会做什么|可以做什么|有什么功能|能聊什么|会聊什么|怎么用|使用帮助|帮助/.test(t)) return { intent: 'capability' };
+    if (/你喜欢什么|爱好|兴趣|喜欢吃什么|喜欢喝什么|喜欢什么颜色|性格/.test(t)) {
+      var cid = detectCharacter(text) || ctx.charId;
+      return { intent: 'character', target: cid };
+    }
+    var other = detectCharacter(text);
+    if (other) return { intent: 'character', target: other };
+
+    if (/为什么|原因|哪里|怎么回事|凭什么|依据|命中|解释|看不懂/.test(t) && (m.lastUrl || ctx.last)) return { intent: 'why' };
+    if (/怎么办|怎么做|如何处理|怎么处理|如何防范|要注意什么|下一步|该做什么|我该怎么办/.test(t)) return { intent: 'action' };
+    if (/你记得|记得什么|上次.*(什么|哪|检测)|最近.*(检测|查)|历史|记录/.test(t)) return { intent: 'recent' };
+    if (/分数|评分|怎么算|多少分|标准|100分|风险分/.test(t)) return { intent: 'kb', kbId: 'score' };
+    if (/github|pages|部署|托管到|静态站|服务器|后端|api|key/i.test(t)) return { intent: 'kb', kbId: 'github' };
+    if (/你是ai|人工智能|大模型|什么模型|gpt|会思考|有意识|联网吗|能联网|联网/.test(t)) return { intent: 'kb', kbId: 'ai' };
+    if (/讲个笑话|笑话|逗我|搞笑|幽默|来个梗/.test(t)) return { intent: 'joke' };
+    if (/讲故事|故事|寓言|传说/.test(t)) return { intent: 'story' };
+    if (/谢谢|感谢|多谢|thanks|thx/i.test(t)) return { intent: 'thanks' };
+    if (/再见|拜拜|bye|下次见|明天见|我走了/.test(t)) return { intent: 'bye' };
+    if (/晚安|睡了|去睡|早安|早上好|吃饭|饿了|好饿|好无聊|无聊|喜欢我吗|爱我|女朋友|男朋友|好厉害|真棒|好可爱/.test(t)) return { intent: 'smalltalk' };
+    if (/你好|您好|嗨|哈喽|在吗|在不在|晚上好|hi|hello/i.test(t)) return { intent: 'greeting' };
+    if (/累|烦|难过|伤心|压力|焦虑|紧张|害怕|恐惧|孤独|失眠|睡不着|崩溃|心情不好|想哭|被骂|委屈/.test(t)) return { intent: 'emotion' };
+    if (/继续|详细|展开|还有呢|多说|再说|然后呢|具体/.test(t)) return { intent: 'continue' };
+    if (/简单|说人话|没听懂|不懂|太复杂|一句话/.test(t)) return { intent: 'simple' };
+    if (/几点|时间|今天几号|星期几|日期/.test(t)) return { intent: 'kb', kbId: 'time' };
+
+    var kb = findKb(text);
+    if (kb) return { intent: 'kb', kbId: kb.id };
+
+    if (m.lastIntent === 'scan' && /为什么|哪里|怎么回事/.test(t)) return { intent: 'why' };
+    return { intent: 'fallback' };
+  }
+
+  /* ------------------------------------------------------------ 主入口 --- */
+
+  function respond(text, ctx) {
+    ctx = ctx || {};
+    if (!ctx.charId) ctx.charId = 'sakura';
+    var m = syncContext(ctx);
+    m.lastChar = ctx.charId;
+    m.turns = (m.turns || 0) + 1;
+    ctx.turns = m.turns;
+    text = String(text || '').trim().slice(0, 500);
+    if (!text) return response('你还没说话呢。发一个网址，或者问我一个防骗问题都可以。', ['你能做什么？', '帮我检测一个网址'], 'idle');
+    log('user', text, ctx.charId);
+
+    var url = extractUrl(text);
+    var routeInfo = route(text, ctx, url);
+    var out;
+
+    switch (routeInfo.intent) {
+      case 'name':
+        out = nameSet(routeInfo.name, ctx);
+        break;
+      case 'fact':
+        out = rememberFact(text, ctx) || response(compose(ctx.charId, '我记住啦。', { seed: text, close: false }), ['你还记得什么？'], 'happy');
+        break;
+      case 'scan':
+        out = scanAnswer(routeInfo.url, ctx);
+        break;
+      case 'identity':
+        out = identity(ctx);
+        break;
+      case 'capability':
+        out = capabilities(ctx);
+        break;
+      case 'character':
+        out = characterAnswer(ctx, routeInfo.target);
+        break;
+      case 'why':
+        out = explainResult(ctx, false);
+        break;
+      case 'action':
+        out = actionAdvice(ctx);
+        break;
+      case 'lastSafety':
+        out = lastSafety(ctx);
+        break;
+      case 'recent':
+        out = recent(ctx);
+        break;
+      case 'memory':
+        out = memoryAnswer(ctx);
+        break;
+      case 'crisis':
+        out = crisisAnswer(ctx);
+        break;
+      case 'family':
+        out = familySummary(ctx);
+        break;
+      case 'companion':
+        out = companionAnswer(ctx);
+        break;
+      case 'emotion':
+        out = emotionAnswer(ctx, text);
+        break;
+      case 'joke':
+        out = jokeAnswer(ctx);
+        break;
+      case 'story':
+        out = storyAnswer(ctx);
+        break;
+      case 'thanks':
+        out = thanksAnswer(ctx);
+        break;
+      case 'bye':
+        out = byeAnswer(ctx);
+        break;
+      case 'greeting':
+        out = greeting(ctx);
+        break;
+      case 'smalltalk':
+        out = smallTalk(ctx, text) || greeting(ctx);
+        break;
+      case 'continue':
+        out = continueAnswer(ctx);
+        break;
+      case 'simple':
+        out = simpleAnswer(ctx);
+        break;
+      case 'kb':
+        var kbItem = null;
+        KB.some(function (k) { if (k.id === routeInfo.kbId) { kbItem = k; return true; } return false; });
+        out = kbItem ? kbAnswer(kbItem, ctx) : null;
+        if (!out) out = fallback(ctx, text);
+        break;
+      default:
+        out = fallback(ctx, text);
+    }
+
+    if (!out) out = fallback(ctx, text);
+    out.intent = out.intent || routeInfo.intent;
+    m.lastIntent = out.intent;
+    if (out.kb) m.lastKb = out.kb;
+    m.lastAnswer = out.text;
+    log('bot', out.text, ctx.charId);
+    saveMemory();
+    return out;
+  }
+
+  function continueAnswer(ctx) {
+    var m = loadMemory();
+    if (m.lastIntent === 'scan' || m.lastIntent === 'why' || m.lastIntent === 'lastSafety') return explainResult(ctx, false);
+    if (m.lastIntent === 'joke') return jokeAnswer(ctx);
+    if (m.lastIntent === 'story') return storyAnswer(ctx);
+    if (m.lastKb) {
+      var kb = null;
+      KB.some(function (x) { if (x.id === m.lastKb) { kb = x; return true; } return false; });
+      if (kb) {
+        var body = kb.body + (kb.tip && kb.tip.length ? '\n再补充一点：' + kb.tip.join('；') : '');
+        return response(compose(ctx.charId, body, { seed: 'more' + kb.id, close: true }), ['再讲简单一点', '帮我检测一个网址', '你还能做什么？'], 'idle', { kb: kb.id });
+      }
+    }
+    return capabilities(ctx);
+  }
+
+  function simpleAnswer(ctx) {
+    var m = loadMemory();
+    if (!m.lastUrl && (m.lastIntent === 'scan' || m.lastIntent === 'why' || m.lastIntent === 'action')) {
+      return response(
+        compose(ctx.charId, '我这边还没有成功的检测结果。把完整网址发我，我查完再用一句话给你结论。', {
+          seed: 'simpleNoResult',
+          close: false
+        }),
+        ['帮我检测一个网址', '分数怎么算？', '你能做什么？'],
+        'idle'
+      );
+    }
+    if (m.lastIntent === 'scan' || m.lastIntent === 'why' || m.lastIntent === 'action') {
+      return response(
+        compose(ctx.charId, '一句话：' + (m.lastLevel === 'danger' ? '这个网址很危险，别点，也别输入密码。' : (m.lastLevel === 'warn' ? '这个网址有点可疑，先从官方入口核对。' : '这条网址风险不高，但登录和付款仍要走官方入口。')), {
+          seed: 'simpleResult',
+          close: false
+        }),
+        ['我该怎么办？', '再讲详细一点', '再查一个网址'],
+        m.lastLevel === 'danger' ? 'danger' : (m.lastLevel === 'warn' ? 'warn' : 'happy')
+      );
+    }
+    if (m.lastKb) {
+      var kb = null;
+      KB.some(function (x) { if (x.id === m.lastKb) { kb = x; return true; } return false; });
+      if (kb) return kbAnswer(kb, ctx, true);
+    }
+    return response(
+      compose(ctx.charId, '简单说：不确定的链接先别点，账号和钱只走官方入口。', { seed: 'simple', close: true }),
+      ['什么是钓鱼网站？', '帮我检测一个网址', '你能做什么？'],
+      'idle'
+    );
+  }
+
+  function fallback(ctx, text) {
+    var t = norm(text);
+    if (/最近.*骗|新骗术|最新骗局|现在.*骗|骗术|新骗/.test(t)) {
+      return response(
+        compose(ctx.charId, '最近高频的还是这几类：冒充客服退款、快递理赔、低价充值、刷单兼职、假投资平台。\n共同点都是先给你一点好处，再让你加群、扫码或转账。记住：先要钱或先要验证码的，基本都可以停。', {
+          seed: 'newscam',
+          close: true
+        }),
+        ['冒充客服怎么识别？', '刷单兼职是骗局吗？', '帮我检测一个网址', '你能做什么？'],
+        'idle'
+      );
+    }
+    if (/在不在|在吗/.test(t)) return greeting(ctx);
+    if (t.length <= 4) {
+      return response(
+        compose(ctx.charId, '我在。你可以直接发一个网址，或者说“你能做什么”，我带你看看。', {
+          seed: 'short',
+          close: false
+        }),
+        ['你能做什么？', '帮我检测一个网址', '讲个笑话'],
+        'happy'
+      );
+    }
+    return response(
+      compose(ctx.charId, '这个问题我暂时没有可靠答案，不想编一个来糊弄你。\n你可以问我网址检测、域名、HTTPS、验证码、客服退款、兼职刷单这些安全问题；也可以把具体网址发我，我直接查。', {
+        seed: 'fallback',
+        close: false
+      }),
+      ['你能做什么？', '帮我检测一个网址', '最近有什么新骗术？', 'GitHub Pages 怎么部署？'],
+      'idle'
+    );
+  }
+
+  /* ------------------------------------------------------------ 对外接口 --- */
+
+  function greet(ctx) {
+    ctx = ctx || { charId: 'sakura' };
+    if (!ctx.charId) ctx.charId = 'sakura';
+    var m = syncContext(ctx);
+    m.turns = (m.turns || 0) + 1;
+    ctx.turns = m.turns;
+    var out = greeting(ctx);
+    log('bot', out.text, ctx.charId);
+    m.lastIntent = 'greeting';
+    saveMemory();
+    return out;
+  }
+
+  function suggest(ctx) {
+    ctx = ctx || { charId: 'sakura' };
+    syncContext(ctx);
+    var m = loadMemory();
+    if (m.lastUrl) {
+      if (m.lastLevel === 'danger') return ['为什么是危险？', '我该怎么办？', '帮我总结给家人', '再查一个网址'];
+      if (m.lastLevel === 'warn') return ['哪里可疑？', '我该怎么办？', '再查一个网址', '分数怎么算？'];
+      return ['为什么是安全的？', '还有哪些要注意？', '再查一个网址', '你能做什么？'];
+    }
+    return ['你能做什么？', '帮我检测一个网址', '什么是钓鱼网站？', '最近有什么新骗术？'];
+  }
+
+  function history() {
+    var m = loadMemory();
+    return m.log.slice(-12).map(function (x) {
+      return { role: x.role, text: x.text, char: x.char, at: x.at };
+    });
+  }
+
+  function clear() {
+    resetMemory();
+  }
+
+  function summary() {
+    var m = loadMemory();
+    return { name: m.name, lastUrl: m.lastUrl, lastHost: m.lastHost, lastScore: m.lastScore, lastLevel: m.lastLevel, turns: m.turns };
+  }
+
+  root.PhishGuardChat = {
+    respond: respond,
+    greet: greet,
+    suggest: suggest,
+    history: history,
+    clear: clear,
+    summary: summary,
+    reset: resetMemory,
+    _kb: KB,
+    _persona: PERSONA
+  };
+})(typeof window !== 'undefined' ? window : this);
+
+/* ============================================================================
  * PhishGuard · 通用 UI 工具（主题 / 花瓣 / 评分环 / 音效 / 历史行）
  * 网页版与插件版共用同一套实现，仅主题与存储的落点不同。
  * ========================================================================== */
@@ -3087,7 +4002,8 @@ body.mode-popup {
     last: null,
     history: [],
     clearArmed: false,
-    chatStarted: false
+    chatStarted: false,
+    chatBusy: false
   };
 
   const DEMO = {
@@ -3105,7 +4021,7 @@ body.mode-popup {
       'charaPanel', 'charaStage', 'charaName', 'charaTag', 'charaSwitch',
       'bubbleText', 'bubbleWho', 'historyList', 'historyCount', 'clearHistory',
       'chatFab', 'chatPanel', 'chatBody', 'chatChips', 'chatForm', 'chatInput',
-      'chatName', 'chatAva', 'chatClose', 'aboutModal', 'aboutClose', 'aboutBtn',
+      'chatName', 'chatAva', 'chatMode', 'chatClear', 'chatClose', 'aboutModal', 'aboutClose', 'aboutBtn',
       'soundBtn', 'detectBar'
     ].forEach(function (id) { el[id] = document.getElementById(id); });
     el.detectBar = document.querySelector('.detect-bar');
@@ -3166,8 +4082,12 @@ body.mode-popup {
 
     if (window.PhishGuardLive2D) window.PhishGuardLive2D.disposeIn(el.charaStage);
     el.charaStage.innerHTML = PG.charSVG(c.id);
-    // v7：默认使用完整静态立绘，避免手动分层 Live2D 在手腕/颈部出现断缝。
-    // Live2D 运行时保留在页面中，后续模型修好可再启用。
+    const svg = el.charaStage.querySelector('.chara-svg');
+    if (svg && !matchMedia('(prefers-reduced-motion: reduce)').matches) svg.classList.add('swap');
+    if (window.PhishGuardLive2D) {
+      const kind = state.last ? (state.last.level === 'safe' ? 'happy' : (state.last.level === 'warn' ? 'warn' : 'danger')) : 'idle';
+      window.PhishGuardLive2D.mountIn(el.charaStage, c.id, kind);
+    }
 
     el.charaName.textContent = c.name;
     el.charaTag.textContent = c.tag;
@@ -3372,29 +4292,117 @@ body.mode-popup {
   }
 
   /* -------------------------------------------------------------- 聊天 --- */
-  function appendMsg(text, mine) {
+  function chatEngine() { return window.PhishGuardChat || null; }
+  function chatCtx() { return { charId: state.char, last: state.last, history: state.history, page: 'web' }; }
+  function chatSuggestions() {
+    const engine = chatEngine();
+    if (engine && engine.suggest) return engine.suggest(chatCtx());
+    return (PG.CHAT_TOPICS || []).map(function (t) { return t.q; });
+  }
+
+  function appendMsg(text, mine, charId) {
+    const who = charId || state.char;
     const node = document.createElement('div');
     node.className = 'msg' + (mine ? ' me' : '');
-    node.innerHTML = (mine ? '' : PG.miniAvatar(state.char))
+    node.innerHTML = (mine ? '' : PG.miniAvatar(who))
       + '<div class="bubble-mini">' + UI.esc(text) + '</div>';
+    el.chatBody.appendChild(node);
+    el.chatBody.scrollTop = el.chatBody.scrollHeight;
+    return node;
+  }
+
+  function updateChips(items) {
+    const list = (items && items.length ? items : ['你能做什么？', '帮我检测一个网址']).slice(0, 4);
+    el.chatChips.innerHTML = list.map(function (q) {
+      return '<button type="button" data-q="' + UI.esc(q) + '">' + UI.esc(q) + '</button>';
+    }).join('');
+  }
+
+  function showTyping() {
+    const node = document.createElement('div');
+    node.className = 'msg chat-typing';
+    node.id = 'chatTyping';
+    node.innerHTML = PG.miniAvatar(state.char)
+      + '<div class="bubble-mini"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';
     el.chatBody.appendChild(node);
     el.chatBody.scrollTop = el.chatBody.scrollHeight;
   }
 
+  function hideTyping() {
+    const node = document.getElementById('chatTyping');
+    if (node) node.remove();
+  }
+
+  function renderChatLog() {
+    const engine = chatEngine();
+    if (!engine || !engine.history) return false;
+    const log = engine.history();
+    if (!log.length) return false;
+    log.forEach(function (item) {
+      appendMsg(item.text, item.role === 'user', item.char || state.char);
+    });
+    return true;
+  }
+
+  function greetChat() {
+    const engine = chatEngine();
+    if (engine && engine.greet) {
+      const out = engine.greet(chatCtx());
+      appendMsg(out.text, false);
+      updateChips(out.chips);
+      return;
+    }
+    appendMsg(PG.lineFor(state.char, 'greet'), false);
+    updateChips(chatSuggestions());
+  }
+
   function replyTo(text) {
+    if (state.chatBusy) return;
+    state.chatBusy = true;
     appendMsg(text, true);
+    showTyping();
+    const sendBtn = el.chatForm.querySelector('button');
+    if (sendBtn) sendBtn.disabled = true;
+    const ctx = chatCtx();
+    const engine = chatEngine();
+    let fallback = null;
+    if (!engine || !engine.respond) fallback = PG.chatReply(state.char, text);
+    const delay = Math.min(1150, 320 + text.length * 8);
+
     setTimeout(function () {
-      appendMsg(PG.chatReply(state.char, text), false);
-    }, 420);
+      hideTyping();
+      let out;
+      if (engine && engine.respond) {
+        try { out = engine.respond(text, ctx); }
+        catch (e) {
+          console.warn('[PhishGuard] chat engine fallback:', e);
+          out = { text: '我这边暂时没接上对话引擎。你可以直接把网址发给我，我会用检测引擎帮你分析。', chips: ['帮我检测一个网址', '你能做什么？'], mood: 'idle' };
+        }
+      } else {
+        out = { text: fallback, chips: [], mood: 'idle' };
+      }
+      appendMsg(out.text, false, state.char);
+      if (out.chips && out.chips.length) updateChips(out.chips);
+      if (out.result && out.result.ok) {
+        el.urlInput.value = out.result.url;
+        renderResult(out.result);
+        if (el.chatMode) el.chatMode.textContent = 'MiniChat · 已同步检测结果';
+      } else if (out.mood) {
+        setMood(out.mood);
+      }
+      state.chatBusy = false;
+      if (sendBtn) sendBtn.disabled = false;
+      el.chatInput.focus();
+    }, delay);
   }
 
   function openChat() {
     el.chatPanel.hidden = false;
     el.chatFab.setAttribute('aria-expanded', 'true');
+    if (el.chatMode) el.chatMode.textContent = 'MiniChat · 离线智能 · 本地记忆';
     if (!state.chatStarted) {
       state.chatStarted = true;
-      appendMsg(PG.lineFor(state.char, 'greet'), false);
-      appendMsg('可以用下面的问题试试，或者直接问我也行～', false);
+      if (!renderChatLog()) greetChat();
     }
     el.chatInput.focus();
   }
@@ -3404,11 +4412,21 @@ body.mode-popup {
     el.chatFab.setAttribute('aria-expanded', 'false');
   }
 
+  function clearChat() {
+    const engine = chatEngine();
+    if (engine && engine.clear) engine.clear();
+    el.chatBody.innerHTML = '';
+    if (el.chatMode) el.chatMode.textContent = 'MiniChat · 记忆已重置';
+    state.chatStarted = true;
+    greetChat();
+  }
+
   function bindChat() {
     el.chatFab.addEventListener('click', function () {
       if (el.chatPanel.hidden) openChat(); else closeChat();
     });
     el.chatClose.addEventListener('click', closeChat);
+    if (el.chatClear) el.chatClear.addEventListener('click', clearChat);
     el.chatForm.addEventListener('submit', function (e) {
       e.preventDefault();
       const text = (el.chatInput.value || '').trim();
@@ -3416,14 +4434,12 @@ body.mode-popup {
       el.chatInput.value = '';
       replyTo(text);
     });
-    el.chatChips.innerHTML = PG.CHAT_TOPICS.map(function (t) {
-      return '<button type="button" data-q="' + UI.esc(t.q) + '">' + UI.esc(t.q) + '</button>';
-    }).join('');
     el.chatChips.addEventListener('click', function (e) {
       const chip = e.target.closest('button[data-q]');
       if (!chip) return;
       replyTo(chip.getAttribute('data-q'));
     });
+    updateChips(chatSuggestions());
   }
 
   /* -------------------------------------------------------------- 弹窗 --- */
