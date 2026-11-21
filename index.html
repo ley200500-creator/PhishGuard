@@ -6,6 +6,7 @@
 <title>PhishGuard · 二次元看板娘钓鱼检测</title>
 <meta name="description" content="PhishGuard 是一个二次元看板娘风格的钓鱼网址检测工具：12 项特征、纯前端本地分析、不上传任何数据。">
 <meta name="theme-color" content="#FFF7FA">
+<meta name="phishguard-build" content="2026-11-21-fixed-character-v1.2.1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%228%22%20fill%3D%22%23FFF1F6%22%2F%3E%3Cpath%20d%3D%22M16%203.5%20L25.5%207v9.2c0%205.9-3.8%2010.8-9.5%2013.6C10.3%2025%206.5%2020.1%206.5%2014.2V7z%22%20fill%3D%22%23fff%22%20stroke%3D%22%23F4789A%22%20stroke-width%3D%221.9%22%2F%3E%3Cpath%20d%3D%22M11.2%2015.8l3.1%203.4%206.6-7%22%20fill%3D%22none%22%20stroke%3D%22%23F0607F%22%20stroke-width%3D%222.9%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E">
 <style>
 /* ============================================================================
@@ -431,7 +432,7 @@ a { color: var(--accent-strong); }
 
 .stage {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 362px;
+  grid-template-columns: minmax(0, 1fr) 430px;
   gap: 20px;
   align-items: stretch;
   margin-bottom: 26px;
@@ -779,29 +780,26 @@ a { color: var(--accent-strong); }
   position: relative;
   flex: 1;
   min-height: 0;
+  width: 100%;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   z-index: 1;
 }
-.chara-svg { width: 100%; max-width: 296px; height: auto; filter: drop-shadow(0 18px 22px rgba(215, 150, 170, .28)); }
-.chara-raster { display: block; position: relative; }
-.chara-body { width: 100%; height: 0; padding-bottom: 140%; }
-.mode-web .chara-body { height: 414px; padding-bottom: 0; }
-.chara-fallback { position: absolute; inset: 0; }
-.chara-fallback .chara-breathe { position: absolute; inset: 0; }
-.chara-live2d-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity .5s ease;
-  z-index: 1;
-  filter: saturate(1.12) contrast(1.03);
+.chara-svg {
+  width: min(100%, 400px);
+  max-width: 400px;
+  height: auto;
+  aspect-ratio: 5 / 7;
+  margin-left: auto;
+  margin-right: auto;
+  filter: drop-shadow(0 18px 22px rgba(215, 150, 170, .28));
 }
+.chara-raster { display: block; position: relative; }
+.chara-body { width: 100%; height: auto; aspect-ratio: 5 / 7; padding-bottom: 0; }
+.mode-web .chara-body { height: auto; aspect-ratio: 5 / 7; padding-bottom: 0; }
+.chara-fallback { position: absolute; inset: 0; }
+.chara-fallback .chara-art { position: absolute; inset: 0; }
 .chara-mood-badge {
   position: absolute;
   right: 0;
@@ -831,14 +829,12 @@ a { color: var(--accent-strong); }
 [data-mood="warn"] .chara-mood-badge { color: #a87318; border-color: rgba(240, 200, 110, .85); background: rgba(255, 250, 232, .9); }
 [data-mood="danger"] .chara-mood-badge { color: #c23f4a; border-color: rgba(240, 130, 140, .85); background: rgba(255, 240, 242, .9); }
 [data-mood="thinking"] .chara-mood-badge { color: #5478b8; border-color: rgba(140, 175, 230, .8); background: rgba(240, 247, 255, .9); }
-.chara-body.live2d-ready .chara-live2d-canvas { opacity: 1; }
-.chara-body.live2d-ready .chara-fallback { opacity: 0; }
-.chara-body.live2d-failed .chara-live2d-canvas { display: none; }
 .chara-body .ci {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: contain;
   opacity: 0;
+  object-position: center bottom;
   transition: opacity .16s ease;
 }
 .chara-body .ci-neutral { opacity: 1; }
@@ -849,10 +845,11 @@ a { color: var(--accent-strong); }
 [data-mood="warn"] .chara-body .ci-sad,
 [data-mood="danger"] .chara-body .ci-sad { opacity: 1; }
 .mini-ava { border-radius: 50%; object-fit: cover; background: #fff; display: inline-block; vertical-align: middle; }
-.chara-svg.swap { animation: chara-in .5s cubic-bezier(.2, .9, .3, 1.25); }
+/* 只做透明度淡入，绝不缩放或位移角色 */
+.chara-svg.enter { animation: chara-in .28s ease-out; }
 @keyframes chara-in {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: none; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .nameplate {
@@ -1374,16 +1371,6 @@ body.mode-popup {
 /* ============================================================================
  * 看板娘动效：呼吸 / 表情切换 / 思考状态
  * ========================================================================== */
-.chara-svg .chara-breathe {
-  transform-box: border-box;
-  transform-origin: 50% 100%;
-  animation: chara-breathe 4.8s ease-in-out infinite;
-}
-@keyframes chara-breathe {
-  0%, 100% { transform: scale(1, 1); }
-  50%      { transform: scale(1.012, 1.018); }
-}
-
 .chara-svg .sway {
   transform-box: view-box;
   transform-origin: 200px 150px;
@@ -1423,14 +1410,6 @@ body.mode-popup {
 [data-mood="danger"] .brow-worry { display: block; }
 [data-mood="danger"] .sweat { display: block; }
 
-[data-mood="danger"] .chara-svg { animation: chara-alert .55s ease 1; }
-@keyframes chara-alert {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-6px) rotate(-1deg); }
-  55% { transform: translateX(5px) rotate(1deg); }
-  80% { transform: translateX(-3px); }
-}
-
 /* 思考状态：头顶转圈 + 小星星 */
 .think-deco {
   position: absolute;
@@ -1466,14 +1445,6 @@ body.mode-popup {
   0%, 100% { opacity: .2; transform: translateY(2px) scale(.85); }
   50%      { opacity: .9; transform: translateY(-6px) scale(1.1); }
 }
-[data-mood="thinking"] .chara-svg {
-  animation: chara-think 1.6s ease-in-out infinite alternate;
-}
-@keyframes chara-think {
-  from { transform: rotate(-1.4deg) translateY(0); }
-  to   { transform: rotate(1.4deg) translateY(-3px); }
-}
-
 /* 补充：安全项圆点 / 输入框抖动 / 音效图标状态 */
 .reason-item[data-sev="safe"] .sev { background: var(--mint-deep); }
 .reason-item[data-sev="safe"] { border-color: rgba(184, 230, 208, .8); background: rgba(240, 253, 248, .72); }
@@ -1807,7 +1778,7 @@ body.mode-popup {
         <div class="history-list" id="historyList"></div>
       </section>
 
-      <div class="foot">PhishGuard · 二次元看板娘安全检测 · 全部计算在本地完成</div>
+      <div class="foot">PhishGuard · 固定立绘版 v1.2.1 · 全部计算在本地完成</div>
     </main>
 
     <button type="button" class="chat-fab" id="chatFab" aria-expanded="false" aria-controls="chatPanel">
@@ -1875,10 +1846,6 @@ body.mode-popup {
       </div>
     </div>
 
-<script src="assets/live2d/pixi.min.js"></script>
-<script src="assets/live2d/live2dcubismcore.min.js"></script>
-<script src="assets/live2d/cubism5.min.js"></script>
-<script src="live2d.js"></script>
 <script>
 /* ============================================================================
  * PhishGuard · 核心模块（检测引擎 / 看板娘立绘 / 台词库 / 本地存储）
@@ -2390,16 +2357,17 @@ body.mode-popup {
   function charSVG(id) {
     const c = CHAR_MAP[id] || CHARS[0];
     const moods = ['neutral', 'happy', 'sad'];
-    // 静态立绘作为 Live2D 加载失败时的回退；正常时由 canvas 覆盖显示
-    return '<div class="chara-svg chara-raster chara-body chara-live2d" role="img" aria-label="' + c.name + '立绘">'
+    // 固定立绘层：不创建 canvas、不读取尺寸、不做入场缩放。
+    // 三种表情图尺寸完全一致，只切换透明度；角色盒由 CSS 固定为 5:7，任何时刻都不会变小。
+    return '<div class="chara-svg chara-raster chara-body" role="img" aria-label="' + c.name + '立绘" data-char="' + c.id + '">'
       + '<div class="chara-fallback">'
-      + '<div class="chara-breathe">'
+      + '<div class="chara-art">'
       + moods.map(function (m) {
         const file = m === 'neutral' ? c.id + '_full.png' : c.id + '_full_' + m + '.png';
-        return '<img class="ci ci-' + m + '" src="assets/chara/' + file + '" alt="" draggable="false">';
+        return '<img class="ci ci-' + m + '" src="assets/chara/' + file + '" alt="" draggable="false"'
+          + (m === 'neutral' ? ' fetchpriority="high"' : '') + '>'
       }).join('')
       + '</div></div>'
-      + '<canvas class="chara-live2d-canvas" data-live2d-char="' + c.id + '" aria-hidden="true"></canvas>'
       + '<span class="chara-mood-badge" aria-hidden="true"></span>'
       + '</div>';
   }
@@ -4045,7 +4013,6 @@ body.mode-popup {
   function setMood(mood) {
     state.mood = mood;
     if (el.charaPanel) el.charaPanel.setAttribute('data-mood', mood);
-    if (window.PhishGuardLive2D) window.PhishGuardLive2D.setMood(mood);
   }
 
   function setBusy(busy) {
@@ -4080,18 +4047,8 @@ body.mode-popup {
     const c = PG.CHAR_MAP[id] || PG.CHARS[0];
     state.char = c.id;
 
-    if (window.PhishGuardLive2D) window.PhishGuardLive2D.disposeIn(el.charaStage);
+    // 只替换固定尺寸的立绘 DOM；不初始化 canvas、不测量、不缩放。
     el.charaStage.innerHTML = PG.charSVG(c.id);
-    const svg = el.charaStage.querySelector('.chara-svg');
-    if (svg && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      svg.classList.add('swap');
-      // 动画结束就摘掉 swap，避免 transform(.94) 在任何后续布局中被重新应用。
-      svg.addEventListener('animationend', function () { svg.classList.remove('swap'); }, { once: true });
-    }
-    if (window.PhishGuardLive2D) {
-      const kind = state.last ? (state.last.level === 'safe' ? 'happy' : (state.last.level === 'warn' ? 'warn' : 'danger')) : 'idle';
-      window.PhishGuardLive2D.mountIn(el.charaStage, c.id, kind);
-    }
 
     el.charaName.textContent = c.name;
     el.charaTag.textContent = c.tag;
