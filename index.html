@@ -851,7 +851,7 @@ a { color: var(--accent-strong); }
 .mini-ava { border-radius: 50%; object-fit: cover; background: #fff; display: inline-block; vertical-align: middle; }
 .chara-svg.swap { animation: chara-in .5s cubic-bezier(.2, .9, .3, 1.25); }
 @keyframes chara-in {
-  from { opacity: 0; transform: translateY(16px) scale(.94); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: none; }
 }
 
@@ -4083,7 +4083,11 @@ body.mode-popup {
     if (window.PhishGuardLive2D) window.PhishGuardLive2D.disposeIn(el.charaStage);
     el.charaStage.innerHTML = PG.charSVG(c.id);
     const svg = el.charaStage.querySelector('.chara-svg');
-    if (svg && !matchMedia('(prefers-reduced-motion: reduce)').matches) svg.classList.add('swap');
+    if (svg && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      svg.classList.add('swap');
+      // 动画结束就摘掉 swap，避免 transform(.94) 在任何后续布局中被重新应用。
+      svg.addEventListener('animationend', function () { svg.classList.remove('swap'); }, { once: true });
+    }
     if (window.PhishGuardLive2D) {
       const kind = state.last ? (state.last.level === 'safe' ? 'happy' : (state.last.level === 'warn' ? 'warn' : 'danger')) : 'idle';
       window.PhishGuardLive2D.mountIn(el.charaStage, c.id, kind);

@@ -43,8 +43,17 @@
   function lerp(a, b, t) { return a + (b - a) * t; }
 
   function stageSize(host) {
-    var r = host.getBoundingClientRect();
-    return { w: Math.max(1, Math.round(r.width)), h: Math.max(1, Math.round(r.height)) };
+    // 不用 getBoundingClientRect：角色容器在切换时有 scale(.94) 入场动画，
+    // 那会把“视觉尺寸”当成布局尺寸，模型就会按 94% 初始化并偏向一侧。
+    // clientWidth / clientHeight 是未变换的布局尺寸，不受动画影响。
+    var w = host.clientWidth || 0;
+    var h = host.clientHeight || 0;
+    if (!w || !h) {
+      var r = host.getBoundingClientRect();
+      w = r.width;
+      h = r.height;
+    }
+    return { w: Math.max(1, Math.round(w)), h: Math.max(1, Math.round(h)) };
   }
 
   function setParam(model, id, value) {
@@ -186,29 +195,48 @@
       app.stage.addChild(model);
       model.anchor.set(0.5, 1);
       var nativeH = model.height;
-      model.x = size.w / 2;
-      model.y = size.h + 1;
-      model.scale.set(size.h / nativeH);
+      var lastW = 0;
+      var lastH = 0;
+
+      // 舞台在首屏布局、字体加载和角色切换后会短暂变化；只依赖
+      // ResizeObserver 会漏掉某些过渡帧，导致模型按旧尺寸缩放并偏到左下角。
+      // 统一用 fitStage() 对齐渲染器、画布 CSS 尺寸和模型锚点。
+      function fitStage() {
+        var s = stageSize(stage);
+        if (!s.w || !s.h) return;
+        if (s.w === lastW && s.h === lastH) return;
+        lastW = s.w;
+        lastH = s.h;
+        try { app.renderer.resize(s.w, s.h); } catch (e) {}
+        try { canvas.style.width = s.w + 'px'; canvas.style.height = s.h + 'px'; } catch (e) {}
+        model.x = s.w / 2;
+        model.y = s.h + 1;
+        model.scale.set(s.h / nativeH);
+      }
+
+      fitStage();
 
       // 不使用内置动作/眨眼，改由本文件统一驱动；保留物理和变形
       try { model.internalModel.motionManager.stopAllMotions(); } catch (e) {}
       try { model.internalModel.eyeBlink = null; } catch (e) {}
 
       var st = makeState(mood || 'idle');
-      var tick = function () { applyParams(model, st, now()); };
+      var lastFit = 0;
+      var tick = function () {
+        var t = now();
+        // 250ms 一次几何对齐，足够覆盖首屏过渡，又不会每帧触发布局读取。
+        if (t - lastFit > 250) {
+          lastFit = t;
+          fitStage();
+        }
+        applyParams(model, st, t);
+      };
       app.ticker.add(tick);
       applyParams(model, st, now());
 
       var ro = null;
       if (root.ResizeObserver) {
-        ro = new ResizeObserver(function () {
-          var s = stageSize(stage);
-          if (!s.w || !s.h) return;
-          try { app.renderer.resize(s.w, s.h); } catch (e) {}
-          model.x = s.w / 2;
-          model.y = s.h + 1;
-          model.scale.set(s.h / nativeH);
-        });
+        ro = new ResizeObserver(function () { fitStage(); });
         ro.observe(stage);
       }
 
